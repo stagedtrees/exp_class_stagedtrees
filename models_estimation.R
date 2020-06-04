@@ -1,7 +1,38 @@
 #############################  MODEL ESTIMATION THROUGH BOOTSTRAP ITERATIONS  #############################  
 
-source("/Users/federico/Dropbox/Gherardo:Manuele/Classification Paper/install_load_packages.R")
-source("/Users/federico/Dropbox/Gherardo:Manuele/Classification Paper/initialize_results.R")
+source("initialize_results.R")
+#######   load the libraries
+library(bnlearn)
+library(stagedtrees)
+
+library(nnet)
+library(randomForest)
+library(rpart)
+library(MASS)
+library(rrlda)
+library(sda)
+library(sparseLDA)
+library(mda)
+library(klaR)
+library(HDclassif)
+library(class)
+library(kohonen)
+library(adabag)
+library(caTools)
+library(ipred)
+library(caret)
+library(glmnet)
+library(spls)
+library(pls)
+
+library(e1071)
+library(gam)
+library(polspline)
+library(tree)
+library(ada)
+library(pROC)
+library(InformationValue)
+library(readxl)
 
 
 

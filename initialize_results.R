@@ -5,7 +5,7 @@
 # load the .R file with the code to install and load all the needed libraries
 # source("/Users/federico/Dropbox/Gherardo:Manuele/Classification Paper/install_load_packages.R")
 
-load("/Users/federico/Dropbox/Gherardo:Manuele/Classification Paper/datasets.RData")
+load("datasets.RData")
 
 all_datasets <- list(abalone, Asym, breast_cancer, breast_cancer_wisconsin, car,chds, 
                      chestSim500, energy1, energy2, FallEld, fertility, house_votes, indian_liver, iris,                   
