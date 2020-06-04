@@ -587,3 +587,4 @@ for(d in c(1:9, 11:20)) {
   } 
 }
 
+saveRDS(results, file = "results.rds")
