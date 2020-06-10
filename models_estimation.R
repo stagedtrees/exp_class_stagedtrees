@@ -1,7 +1,36 @@
 #############################  MODEL ESTIMATION THROUGH BOOTSTRAP ITERATIONS  #############################  
 
-source("/Users/federico/Dropbox/Gherardo:Manuele/Classification Paper/install_load_packages.R")
-source("/Users/federico/Dropbox/Gherardo:Manuele/Classification Paper/initialize_results.R")
+library(bnlearn)
+library(stagedtrees)
+
+library(nnet)
+library(randomForest)
+library(rpart)
+library(MASS)
+library(rrlda)
+library(sda)
+library(sparseLDA)
+library(mda)
+library(klaR)
+library(HDclassif)
+library(class)
+library(kohonen)
+library(adabag)
+library(caTools)
+library(ipred)
+library(caret)
+library(glmnet)
+library(spls)
+library(pls)
+
+library(e1071)
+library(gam)
+library(polspline)
+library(tree)
+library(ada)
+library(pROC)
+library(InformationValue)
+library(readxl)
 
 
 
@@ -29,7 +58,7 @@ for(d in c(1, 3:20)) {
       }
     }
     
-    ####### stagedtrees models  ####### 
+    message("stagedtrees models")
     
     # train models
     time_full <- system.time(m_full <- full(train, lambda = 0.5))[1] # FULL
@@ -105,7 +134,7 @@ for(d in c(1, 3:20)) {
     
     ####### literature algorithms  ####### 
     
-    # bnlearn hc
+    message("bnlearn hc")
     time_m11 <- system.time(m11 <- bnlearn::hc(train))[1]
     m11 <- bn.fit(m11, train)
     prob_m11 <- t(attr(predict(m11, node = "answer", data = test, prob = TRUE), "prob"))
@@ -117,7 +146,7 @@ for(d in c(1, 3:20)) {
                               levels(binary_datasets[[d]]$answer)[1]), levels = levels(binary_datasets[[d]]$answer))
     acc_m11 <- sum(diag(table(pred_m11, validation$answer))) / NROW(validation)
     
-    # bnlearn tabu
+    message("bnlearn tabu")
     time_m12 <- system.time(m12 <- tabu(train))[1]
     m12 <- bn.fit(m12, train)
     prob_m12 <- t(attr(predict(m12, node = "answer", data = test, prob = TRUE), "prob"))
@@ -129,7 +158,7 @@ for(d in c(1, 3:20)) {
                               levels(binary_datasets[[d]]$answer)[1]), levels = levels(binary_datasets[[d]]$answer))
     acc_m12 <- sum(diag(table(pred_m12, validation$answer))) / NROW(validation)
     
-    # naive bayes
+    message("naive bayes")
     time_m13 <- system.time(m13 <- naiveBayes(x = train[, -1], y = train$answer))[1]
     prob_m13 <- predict(m13, newdata = test, type = "raw")
     m13_cutoff <- optimalCutoff(as.numeric(test$answer) - 1, prob_m13[, 2], optimiseFor = "Both")
@@ -138,7 +167,7 @@ for(d in c(1, 3:20)) {
                               levels(binary_datasets[[d]]$answer)[1]), levels = levels(binary_datasets[[d]]$answer))
     acc_m13 <- sum(diag(table(pred_m13, validation$answer))) / NROW(validation)
     
-    # logistic model
+    message("logistic model")
     time_m14 <- system.time(m14 <- multinom(answer ~ ., data = train))[1]
     prob_m14 <- predict(m14, newdata = test, type = "probs")
     m14_cutoff <- optimalCutoff(as.numeric(test$answer) - 1, prob_m14, optimiseFor = "Both")
@@ -147,7 +176,7 @@ for(d in c(1, 3:20)) {
                               levels(binary_datasets[[d]]$answer)[1]), levels = levels(binary_datasets[[d]]$answer))
     acc_m14 <- sum(diag(table(pred_m14, validation$answer))) / NROW(validation)
     
-    # neural network
+    message("neural network")
     time_m15 <- system.time(m15 <- nnet(answer ~ ., data = train, size = 10, 
                                         decay = 0.001, maxit = 5000, linout = FALSE, MaxNWts = 5000))[1]
     prob_m15 <- predict(m15, newdata = test, type = "raw")
@@ -167,7 +196,7 @@ for(d in c(1, 3:20)) {
     acc_m16 <- sum(diag(table(pred_m16, validation$answer))) / NROW(validation)
     
     
-    # classification tree
+    message("classification tree")
     time_m17 <- system.time(m17 <- rpart(answer ~ ., data = train, method = "class", cp = 0.0))[1]
     prob_m17 <- predict(m17, newdata = test, type = "prob")
     m17_cutoff <- optimalCutoff(as.numeric(test$answer) - 1, prob_m17[, 2], optimiseFor = "Both")
@@ -185,7 +214,7 @@ for(d in c(1, 3:20)) {
     acc_m18 <- sum(diag(table(pred_m18, validation$answer))) / NROW(validation)
     
     
-    # random forest
+    message("random forest")
     time_m19 <- system.time(m19  <- randomForest(answer ~ ., data = train, nodesize = 1, ntree = 100, 
                                                  mtry = round(sqrt(NCOL(train)))))[1]
     prob_m19 <- predict(m19, newdata = test, type = "prob")
@@ -206,7 +235,7 @@ for(d in c(1, 3:20)) {
     
     
     
-    ## Paper "Do we need hundreds of algorithms ...." algorithms
+    message("Do we need hundreds of algorithms ....")
     x <- train
     for(l in 1:NCOL(train)) x[, l] <- as.numeric(x[, l])
     y <- test
@@ -363,7 +392,8 @@ for(d in c(1, 3:20)) {
     acc_m39 <- sum(diag(table(pred_m39, validation$answer))) / NROW(validation)
     
     
-    ### ROC CURVE
+    message("ROC CURVE")
+    
     roc_full <- roc(response = validation$answer, predictor = prob_m_full[, 2], auc = TRUE, plot = FALSE)
     roc_indep <- roc(response = validation$answer, predictor = prob_m_indep[, 2], auc = TRUE, plot = FALSE)
     roc_m1 <- roc(response = validation$answer, predictor = prob_m1[, 2], auc = TRUE, plot = FALSE)
@@ -397,7 +427,7 @@ for(d in c(1, 3:20)) {
     roc_m37 <- roc(response = validation$answer, predictor = prob_m37, auc = TRUE, plot = FALSE)
     roc_m39 <- roc(response = validation$answer, predictor = prob_m39[, 2], auc = TRUE, plot = FALSE)
     
-    ### CONFUSION MATRIX
+    message("CONFUSION MATRIX")
     confusion_full <- table(pred_m_full, validation$answer)
     confusion_indep <- table(pred_m_indep, validation$answer)
     confusion_m1 <- table(pred_m1, validation$answer)
@@ -448,13 +478,13 @@ for(d in c(1, 3:20)) {
     for(e in 1:length(error)) error[e] <- 1 - accuracy[e]
     
     
-    ### AUC
+    message("AUC")
     auc_models <- c(roc_full$auc, roc_indep$auc, roc_m1$auc, roc_m2$auc, roc_m3$auc, roc_m4$auc, roc_m5$auc, roc_m6$auc,
                     roc_m11$auc, roc_m12$auc, roc_m13$auc, roc_m14$auc, roc_m15$auc, roc_m16$auc, roc_m17$auc, roc_m18$auc,
                     roc_m19$auc, roc_m20$auc, roc_m21$auc, roc_m22$auc, roc_m23$auc, roc_m24$auc, roc_m25$auc, roc_m26$auc,
                     roc_m27$auc, roc_m28$auc, roc_m29$auc, roc_m30$auc, roc_m31$auc, NA, NA, NA, NA, roc_m36$auc, roc_m37$auc, NA, roc_m39$auc)
     
-    ### THRESHOLD MODELS
+    message("THRESHOLD MODELS")
     
     thr <- c(m_full_cutoff, m_indep_cutoff, m1_cutoff, m2_cutoff, m3_cutoff, m4_cutoff, m5_cutoff, m6_cutoff, m11_cutoff,
              m12_cutoff, m13_cutoff, m14_cutoff, m15_cutoff, m16_cutoff, m17_cutoff, m18_cutoff, m19_cutoff, m20_cutoff, m21_cutoff,
@@ -462,7 +492,7 @@ for(d in c(1, 3:20)) {
              NA, NA, NA, NA, m36_cutoff, m37_cutoff, NA, m39_cutoff)
     
     
-    #### saving results for dataset d and bootstrap iteration i
+    message("saving results for dataset d and bootstrap iteration ", i) 
     results[[d]]$computational_time[, i] <- c(time_full, time_indep, time_m1, time_m2, time_m3, time_m4, time_m5,
                                               time_m6, time_m11, time_m12, time_m13, time_m14, time_m15, time_m16,
                                               time_m17, time_m18, time_m19, time_m20, time_m21, time_m22, time_m23,
@@ -594,6 +624,8 @@ for(d in c(1, 3:20)) {
     results[[d]][[4]][, i] <- id_train
     results[[d]][[5]][, i] <- id_test
     results[[d]][[6]][, i] <- id_val
+    message("saving results")
+    saveRDS(results, file = "results.rds")
   } 
 }
 
