@@ -32,7 +32,7 @@ library(pROC)
 library(InformationValue)
 library(readxl)
 
-
+source("initialize_results.R")
 
 set.seed(123) 
 for(d in c(1, 3:20)) { 
