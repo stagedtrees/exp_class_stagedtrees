@@ -1,56 +1,36 @@
 #############################  MODEL ESTIMATION THROUGH BOOTSTRAP ITERATIONS  #############################  
 
-source("initialize_results.R")
-#######   load the libraries
-library(bnlearn)
-library(stagedtrees)
-
-library(nnet)
-library(randomForest)
-library(rpart)
-library(MASS)
-library(rrlda)
-library(sda)
-library(sparseLDA)
-library(mda)
-library(klaR)
-library(HDclassif)
-library(class)
-library(kohonen)
-library(adabag)
-library(caTools)
-library(ipred)
-library(caret)
-library(glmnet)
-library(spls)
-library(pls)
-
-library(e1071)
-library(gam)
-library(polspline)
-library(tree)
-library(ada)
-library(pROC)
-library(InformationValue)
-library(readxl)
+source("/Users/federico/Dropbox/Gherardo:Manuele/Classification Paper/install_load_packages.R")
+source("/Users/federico/Dropbox/Gherardo:Manuele/Classification Paper/initialize_results.R")
 
 
 
 set.seed(123) 
-for(d in c(1:9, 11:20)) { 
+for(d in c(1, 3:20)) { 
   for(i in 1:10)  
   {
-    message("i :", i, " d: ", d)
-    id_train <- sample(1:NROW(binary_datasets[[d]]), NROW(results[[d]][[4]]), replace = FALSE)
-    id_test <- sample(setdiff(1:NROW(binary_datasets[[d]]), id_train), NROW(results[[d]][[5]]), replace = FALSE)
-    id_val <- setdiff(1:NROW(binary_datasets[[d]]), c(id_train, id_test))
-    train <- binary_datasets[[d]][id_train, ]
-    test <- binary_datasets[[d]][id_test, ]
-    validation <- binary_datasets[[d]][id_val, ]
-    
+    # print(d)
+    # print(i)
+    zer0 <- 1
+    while(zer0 > 0) {
+      zer0 <- 0
+      id_train <- sample(1:NROW(binary_datasets[[d]]), NROW(results[[d]][[4]]), replace = FALSE)
+      id_test <- sample(setdiff(1:NROW(binary_datasets[[d]]), id_train), NROW(results[[d]][[5]]), replace = FALSE)
+      id_val <- setdiff(1:NROW(binary_datasets[[d]]), c(id_train, id_test))
+      train <- binary_datasets[[d]][id_train, ]
+      test <- binary_datasets[[d]][id_test, ]
+      validation <- binary_datasets[[d]][id_val, ]
+      marginal_counts <- rep(list(list()), NCOL(train))
+      for(t in 1:NCOL(train)) {
+        marginal_counts[[t]] <- table(train[, t])
+        if(any(marginal_counts[[t]] == 0)) { 
+          zer0 <- zer0 + 1 
+        }
+      }
+    }
     
     ####### stagedtrees models  ####### 
-    message("stagedtrees models")
+    
     # train models
     time_full <- system.time(m_full <- full(train, lambda = 0.5))[1] # FULL
     time_indep <- system.time(m_indep <- indep(train, lambda = 0.5))[1] # INDEP
@@ -125,7 +105,6 @@ for(d in c(1:9, 11:20)) {
     
     ####### literature algorithms  ####### 
     
-    message("bnlearn hc")
     # bnlearn hc
     time_m11 <- system.time(m11 <- bnlearn::hc(train))[1]
     m11 <- bn.fit(m11, train)
@@ -169,7 +148,6 @@ for(d in c(1:9, 11:20)) {
     acc_m14 <- sum(diag(table(pred_m14, validation$answer))) / NROW(validation)
     
     # neural network
-    message("neural network")
     time_m15 <- system.time(m15 <- nnet(answer ~ ., data = train, size = 10, 
                                         decay = 0.001, maxit = 5000, linout = FALSE, MaxNWts = 5000))[1]
     prob_m15 <- predict(m15, newdata = test, type = "raw")
@@ -190,7 +168,6 @@ for(d in c(1:9, 11:20)) {
     
     
     # classification tree
-    message("classification tree")
     time_m17 <- system.time(m17 <- rpart(answer ~ ., data = train, method = "class", cp = 0.0))[1]
     prob_m17 <- predict(m17, newdata = test, type = "prob")
     m17_cutoff <- optimalCutoff(as.numeric(test$answer) - 1, prob_m17[, 2], optimiseFor = "Both")
@@ -209,7 +186,6 @@ for(d in c(1:9, 11:20)) {
     
     
     # random forest
-    message("random forest")
     time_m19 <- system.time(m19  <- randomForest(answer ~ ., data = train, nodesize = 1, ntree = 100, 
                                                  mtry = round(sqrt(NCOL(train)))))[1]
     prob_m19 <- predict(m19, newdata = test, type = "prob")
@@ -231,7 +207,6 @@ for(d in c(1:9, 11:20)) {
     
     
     ## Paper "Do we need hundreds of algorithms ...." algorithms
-    message("others algs from paper...")
     x <- train
     for(l in 1:NCOL(train)) x[, l] <- as.numeric(x[, l])
     y <- test
@@ -622,4 +597,3 @@ for(d in c(1:9, 11:20)) {
   } 
 }
 
-saveRDS(results, file = "results.rds")
