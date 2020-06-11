@@ -34,9 +34,15 @@ library(InformationValue)
 
 
 source("st_methods.R")
+source("bn_methods.R")
+source("bnc_methods.R")
+
 classifiers <- c(
-  "st_full", "st_indep", "st_hc_indep", "st_fbhc", ## st_methods 
-  "st_bj_kl", "st_bj_tv", "st_bj_cd",  ### st_methods 
+  "st_full", "st_indep", "st_hc_indep", "st_fbhc", ## st_methods (stagedtrees)
+  "st_bj_kl", "st_bj_tv", "st_bj_cd",  ### st_methods  (stagedtrees)
+  "bn_tabu", ## bn_methods (bnlearn)
+  "bnc_nb", "bnc_tan_cl", "bnc_tan_hc", "bnc_fssj", "bnc_bsej",  ## bnc_methods (bnclassify) 
+  "bnc_3db", # "bnc_4db",  ## bnc_methods (bnclassify)
   "simple" ## simple
 )
 
