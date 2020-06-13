@@ -3,14 +3,19 @@ library(data.table)
 
 ### here select which methods to plot
 classifiers <- c(
-  "st_fbhc", ## st_methods (stagedtrees) "st_hc_indep",
+## st_methods (stagedtrees)
+  "st_fbhc", 
   "st_bj_kl", 
-  "st_naive",### st_methods  (stagedtrees)
+  "st_naive",
+ # "st_bhc",
+  "st_full",
   #"bn_tabu", ## bn_methods (bnlearn)
+  ## bnc_methods (bnclassify)
   "bnc_nb", 
   "bnc_tan_cl", 
-  #"bnc_tan_hc", "bnc_fssj", "bnc_bsej",  ## bnc_methods (bnclassify) 
-  "bnc_3db", # "bnc_4db",  ## bnc_methods (bnclassify)
+  #"bnc_tan_hc", "bnc_fssj", "bnc_bsej",   
+  "bnc_3db",   
+  ## simple 
   "simple" ## simple
 )
 
@@ -66,17 +71,17 @@ ggplot(data = data[stat == "time" & classifier %in% classifiers], aes(y = data, 
     legend.box.spacing = unit(0.5, "lines"),
     legend.box.margin = margin(
       t = 0,
-      r = 5,
+      r = 8,
       b = 0,
       l = 0,
       unit = "pt"
     ),
     plot.margin = margin(
       t = 0,
-      r = 5,
+      r = 8,
       b = 0,
       l = 0,
       unit = "pt"
     )
   ) +  
-  ggsave("plot_time.pdf", width = 4, height = 6, units = "in")
+  ggsave("plot_time.pdf", width = 5, height = 6, units = "in")

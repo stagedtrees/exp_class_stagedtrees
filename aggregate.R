@@ -4,6 +4,7 @@ classifiers <- c(
   "st_indep",
   "st_hc_indep",
   "st_fbhc",
+  "st_bhc",
   ## st_methods (stagedtrees)
   "st_bj_kl",
   "st_bj_tv",

@@ -41,6 +41,10 @@ st_fbhc <- function(train, test, optimizecutoff = FALSE, ...){
   predict_st(model, train, test, optimizecutoff)
 }
 
+st_bhc <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- stagedtrees::bhc.sevt(stagedtrees::join_zero(stagedtrees::full(train, lambda = 1)))
+  predict_st(model, train, test, optimizecutoff)
+}
 
 st_bj_kl <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::bj.sevt(stagedtrees::join_zero(stagedtrees::full(train, lambda = 1)), distance = kl, thr = 0.2)
@@ -58,6 +62,6 @@ st_bj_cd <- function(train, test, optimizecutoff = FALSE, ...){
 }
 
 st_naive <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::naive.sevt(stagedtrees::full(train, lambda = 1), distance = kl)
+  model <- stagedtrees::naive.sevt(stagedtrees::join_zero(stagedtrees::full(train, lambda = 1)), distance = kl)
   predict_st(model, train, test, optimizecutoff)
 }
