@@ -4,7 +4,7 @@ source("methods.R")
 if (length(args) > 0){
   if (base::endsWith(args[1], ".rds")){ 
     datasets <- readRDS(args[1])    
-  }else{ ##it si the name of a dataset
+  }else{ ##it is the name of a dataset
     datasets <- args[1]
   }
 }
