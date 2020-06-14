@@ -5,6 +5,8 @@
 source("st_methods.R")
 source("bn_methods.R")
 source("bnc_methods.R")
+source("nnet_methods.R")
+source("glm_methods.R")
 
 classifiers <- c(
   ## st_methods (stagedtrees) 
@@ -18,6 +20,10 @@ classifiers <- c(
   ## bnc_methods (bnclassify)
   "bnc_nb", "bnc_tan_cl", "bnc_tan_hc", "bnc_fssj", "bnc_bsej",  
   "bnc_3db", 
+  ## nnet_methods (nnet)
+  "nnet_basic",
+  ## glm_methods (glm)
+  "glm_binomial",
   "simple" ## simple
 )
 

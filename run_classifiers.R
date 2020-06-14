@@ -20,7 +20,7 @@ if (length(args) > 1){
   torun <- classifiers
 }
 
-k <- 10
+k <- 10 ## 1/k of the data is for testing remaining is for train
 nreps <- 10
 
 dir.create("results/", showWarnings = FALSE)

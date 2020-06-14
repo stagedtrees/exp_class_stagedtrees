@@ -1,4 +1,4 @@
-datasets <- readRDS("binary_fast_datasets_names.rds")
+datasets <- readRDS("datasets_names.rds")
 classifiers <- c(
   "st_full",
   "st_indep",
@@ -20,7 +20,10 @@ classifiers <- c(
   "bnc_bsej",
   ## bnc_methods (bnclassify)
   "bnc_3db",
-  # "bnc_4db",  ## bnc_methods (bnclassify)
+  ## nnet_methods (nnet)
+  "nnet_basic",
+  ## glm_methods (glm)
+  "glm_binomial",
   "simple" ## simple
 )
 

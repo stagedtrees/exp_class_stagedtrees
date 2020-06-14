@@ -15,6 +15,10 @@ classifiers <- c(
   "bnc_tan_cl", 
   #"bnc_tan_hc", "bnc_fssj", "bnc_bsej",   
   "bnc_3db",   
+ ## nnet_methods (nnet)
+ "nnet_basic",
+ ## glm_methods (glm)
+ "glm_binomial",
   ## simple 
   "simple" ## simple
 )
