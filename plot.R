@@ -5,10 +5,10 @@ library(data.table)
 classifiers <- c(
 ## st_methods (stagedtrees)
   "st_fbhc", 
-  "st_bj_kl", 
+ # "st_bj_kl", 
   "st_naive",
  # "st_bhc",
-  "st_full",
+#  "st_full",
   #"bn_tabu", ## bn_methods (bnlearn)
   ## bnc_methods (bnclassify)
   "bnc_nb", 

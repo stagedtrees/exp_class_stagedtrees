@@ -2,11 +2,11 @@
 ### and return predictions
 
 
-source("st_methods.R")
-source("bn_methods.R")
-source("bnc_methods.R")
-source("nnet_methods.R")
-source("glm_methods.R")
+source("methods/st_methods.R")
+source("methods/bn_methods.R")
+source("methods/bnc_methods.R")
+source("methods/nnet_methods.R")
+source("methods/glm_methods.R")
 
 classifiers <- c(
   ## st_methods (stagedtrees) 
