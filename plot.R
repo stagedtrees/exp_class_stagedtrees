@@ -75,17 +75,17 @@ ggplot(data = data[stat == "time" & classifier %in% classifiers], aes(y = data, 
     legend.box.spacing = unit(0.5, "lines"),
     legend.box.margin = margin(
       t = 0,
-      r = 8,
+      r = 15,
       b = 0,
       l = 0,
       unit = "pt"
     ),
     plot.margin = margin(
       t = 0,
-      r = 8,
+      r = 15,
       b = 0,
       l = 0,
       unit = "pt"
     )
-  ) +  
+  ) + guides(color=guide_legend(nrow=3,byrow=TRUE)) +  
   ggsave("plot_time.pdf", width = 5, height = 6, units = "in")

@@ -11,8 +11,9 @@ source("glm_methods.R")
 classifiers <- c(
   ## st_methods (stagedtrees) 
   "st_full", "st_indep",  
-  "st_hc_indep",
-  "st_fbhc", "st_bhc", 
+  #"st_hc_indep",
+  "st_fbhc", 
+  #"st_bhc", 
   "st_bj_kl", "st_bj_tv", "st_bj_cd", 
   "st_naive",
   ## bn_methods (bnlearn)

@@ -1,5 +1,6 @@
 library(stagedtrees)
 
+
 predict_st <- function(model, train, test, optimizecutoff){
   if (optimizecutoff){
     prob <- predict(model, newdata = train, class = "answer", prob = TRUE )
@@ -16,7 +17,7 @@ predict_st <- function(model, train, test, optimizecutoff){
 }
 
 st_full <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::full(train, lambda = 1)
+  model <- stagedtrees::full(train, lambda = 1, join_zero = TRUE)
   predict_st(model, train, test, optimizecutoff)
 }
 
@@ -26,42 +27,43 @@ st_indep <- function(train, test, optimizecutoff = FALSE, ...){
 }
 
 st_hc_indep <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::hc.sevt(stagedtrees::indep(train, lambda = 1))
+  model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1), name = "NA")
+  model <- stagedtrees::hc.sevt(model)
   predict_st(model, train, test, optimizecutoff)
   
 }
 
 st_hc_full <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::hc.sevt(stagedtrees::full(train, lambda = 1))
+  model <- stagedtrees::hc.sevt(full_join(train))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_fbhc <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::fbhc.sevt(stagedtrees::join_zero(stagedtrees::full(train, lambda = 1)))
+  model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bhc <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::bhc.sevt(stagedtrees::join_zero(stagedtrees::full(train, lambda = 1)))
+  model <- stagedtrees::bhc.sevt(full(train, join_zero = TRUE, lambda = 1))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_kl <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::bj.sevt(stagedtrees::join_zero(stagedtrees::full(train, lambda = 1)), distance = kl, thr = 0.2)
+  model <- stagedtrees::bj.sevt(full(train, join_zero = TRUE, lambda = 1), distance = kl, thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_tv <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::bj.sevt(stagedtrees::join_zero(stagedtrees::full(train, lambda = 1)), distance = tv, thr = 0.2)
+  model <- stagedtrees::bj.sevt(full(train, join_zero = TRUE, lambda = 1), distance = tv, thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_cd <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::bj.sevt(stagedtrees::join_zero(stagedtrees::full(train, lambda = 1)), distance = cd, thr = 0.2)
+  model <- stagedtrees::bj.sevt(full(train, join_zero = TRUE, lambda = 1), distance = cd, thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::naive.sevt(stagedtrees::join_zero(stagedtrees::full(train, lambda = 1)), distance = kl)
+  model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1), distance = kl)
   predict_st(model, train, test, optimizecutoff)
 }
