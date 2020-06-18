@@ -1,4 +1,4 @@
-datasets <- readRDS("binary_datasets_names.rds")
+datasets <- readRDS("datasets_names.rds")
 classifiers <- c(
   "st_full",
   "st_indep",
