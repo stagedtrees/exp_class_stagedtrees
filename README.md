@@ -27,7 +27,7 @@
 
     * run the `simple` classifier over all the datasets:
     ```
-    Rscript run_classifier.R datasets_names.tsv simple 
+    Rscript run_classifiers.R datasets_names.tsv simple 
     ``` 
      
 
