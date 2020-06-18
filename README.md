@@ -38,4 +38,5 @@ to the measures defined in `statistics.R` and saved in a multidimensional array
 * The script `plot.R` takes the aggregated table `TABLE.rds` and produces plots. 
 
 
-See the [available methods in METHODS.md](METHODS.md) 
+See the [available methods in METHODS.md](METHODS.md) and the available datasets in 
+[datasets_names.tsv](datasets_names.tsv).  
