@@ -1,5 +1,5 @@
 rm(list = ls())
-all_names <- readRDS("datasets_names.rds")
+all_names <- read.table("datasets_names.tsv")[,1]
 
 nreps <- 10
 k <- 10
