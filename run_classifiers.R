@@ -1,9 +1,9 @@
 args <- commandArgs(trailingOnly = TRUE)
-datasets <- readRDS("binary_fast_datasets_names.rds")
+datasets <- read.table("binary_fast_datasets_names.tsv")[,1]
 source("methods.R")
 if (length(args) > 0){
-  if (base::endsWith(args[1], ".rds")){ 
-    datasets <- readRDS(args[1])    
+  if (base::endsWith(args[1], ".tsv")){ 
+    datasets <- read.table(args[1])[,1]    
   }else{ ##it is the name of a dataset
     datasets <- args[1]
   }

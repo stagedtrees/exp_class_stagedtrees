@@ -1,4 +1,4 @@
-datasets <- readRDS("datasets_names.rds")
+datasets <- read.table("datasets_names.tsv")[,1]
 classifiers <- c(
   "st_full",
   "st_indep",

@@ -9,19 +9,26 @@
    Rscript run_classifier.R data class1 class2 class3 ... 
    ```
    where `data` can be the name of one of the datasets (e.g. `Asym`) or the 
-   name of a rds file containing a list of datasets 
-   (e.g. `binary_fast_datasets_names.rds`). The arguments `class1 class2 ... `  
+   name of a tsv file containing a list of datasets 
+   (e.g. `binary_fast_datasets_names.tsv`). The arguments `class1 class2 ... `  
    are identifiers of classifiers: the name of a method (e.g. `bnc_nb` for the 
    naive bayes implemented in bnclassify) or the name of a family of methods such as
    `bnc_` in that case all classifiers in the `bnc_` family will be executed (the 
     final `_` is important!)   
 
-    so for example the following command will execute all methods in the `st_` family 
-    (stagedtrees) plus the `simple` classifier over the `Titanic` dataset: 
+    examples : 
+
+    * run all methods in the `st_` family 
+    (stagedtrees) and the `simple` classifier over the `Titanic` dataset: 
 
     ```
     Rscript run_classifiers.R Titanic st_ simple 
     ```
+
+    * run the `simple` classifier over all the datasets:
+    ```
+    Rscript run_classifier.R datasets_names.tsv simple 
+    ``` 
      
 
 *  Running `aggregate.R` the available results will be evaluated according
