@@ -10,6 +10,7 @@ classifiers <- c(
   "st_bj_tv",
   "st_bj_cd",
   "st_naive",
+  "st_naive_mi",
   ### st_methods  (stagedtrees)
   "bn_tabu",
   ## bn_methods (bnlearn)
