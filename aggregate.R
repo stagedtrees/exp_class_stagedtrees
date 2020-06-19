@@ -1,10 +1,12 @@
-datasets <- read.table("datasets_names.tsv")[,1]
+datasets <- read.table("binary_datasets_names.tsv")[,1]
 classifiers <- c(
   "st_full",
   "st_indep",
   "st_hc_indep",
   "st_fbhc",
   "st_fbhc_mi",
+  "st_fbhc_cmi",
+  "st_fbhc_ch",
   "st_bhc",
   ## st_methods (stagedtrees)
   "st_bj_kl",
@@ -12,6 +14,8 @@ classifiers <- c(
   "st_bj_cd",
   "st_naive",
   "st_naive_mi",
+  "st_naive_cmi",
+  "st_naive_ch",
   ### st_methods  (stagedtrees)
   "bn_tabu",
   ## bn_methods (bnlearn)

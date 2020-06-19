@@ -1,12 +1,50 @@
 library(stagedtrees)
 library(infotheo)
 
-
+## maximising conditional mutual information with class 
 ordering_cmi <- function(train){
-  
+  n <- ncol(train) - 1
+  free <- names(train)[-1]
+  ms <- sapply(free, function(v){
+    infotheo::mutinformation(X = train$answer, Y = train[[v]])
+  })
+  selected <- names(which.max(ms))
+  free <- free[-which.max(ms)]
+  for (i in 2:n){
+    ms <- sapply(free, function(v){
+      infotheo::condinformation(X = train$answer, 
+                                Y = train[[v]],
+                                S = train[,selected])
+    })
+    selected <- c(selected, names(which.max(ms)))
+    free <- free[-which.max(ms)]
+    
+  }
+  return(c("answer", selected))
 }
 
-## normalized mi
+## minimizing conditional entropy
+ordering_ch <- function(train){
+  n <- ncol(train) - 1
+  free <- names(train)[-1]
+  ms <- sapply(free, function(v){
+    infotheo::condentropy(X = train[[v]], Y = train$answer)
+  })
+  selected <- c("answer", names(which.min(ms)))
+  free <- free[-which.min(ms)]
+  for (i in 2:n){
+    ms <- sapply(free, function(v){
+      infotheo::condentropy(X = train[[v]], 
+                                Y = train[,selected])
+    })
+    selected <- c(selected, names(which.min(ms)))
+    free <- free[-which.min(ms)]
+    
+  }
+  return(selected)
+}
+
+## maximising normalized mi
 ordering_mi <- function(train){
   ms <- sapply(names(train)[-1], function(v){
     infotheo::mutinformation(X = train$answer, Y = train[[v]]) / 
@@ -54,6 +92,18 @@ st_hc_full <- function(train, test, optimizecutoff = FALSE, ...){
   predict_st(model, train, test, optimizecutoff)
 }
 
+st_fbhc_ch <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
+                                       order = ordering_ch(train)))
+  predict_st(model, train, test, optimizecutoff)
+}
+
+st_fbhc_cmi <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
+                                       order = ordering_cmi(train)))
+  predict_st(model, train, test, optimizecutoff)
+}
+
 st_fbhc_mi <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
                                        order = ordering_mi(train)))
@@ -68,6 +118,12 @@ st_fbhc <- function(train, test, optimizecutoff = FALSE, ...){
 st_bhc_mi <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::bhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
                                       order = ordering_mi(train)))
+  predict_st(model, train, test, optimizecutoff)
+}
+
+st_bhc_cmi <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- stagedtrees::bhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
+                                      order = ordering_cmi(train)))
   predict_st(model, train, test, optimizecutoff)
 }
 
@@ -96,6 +152,19 @@ st_naive_mi <- function(train, test, optimizecutoff = FALSE, ...){
   predict_st(model, train, test, optimizecutoff)
 }
 
+st_naive_cmi <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, 
+                                        order = ordering_cmi(train)),
+                                   distance = kl)
+  predict_st(model, train, test, optimizecutoff)
+}
+
+st_naive_ch <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, 
+                                        order = ordering_ch(train)),
+                                   distance = kl)
+  predict_st(model, train, test, optimizecutoff)
+}
 
 st_naive <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1),
