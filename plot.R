@@ -5,23 +5,24 @@ library(data.table)
 classifiers <- c(
 ## st_methods (stagedtrees)
   "st_fbhc", 
+  "st_fbhc_mi", 
   "st_bj_kl", 
   "st_naive",
   "st_naive_mi",
   "st_bhc",
-#  "st_full",
-  #"bn_tabu", ## bn_methods (bnlearn)
+  "st_full",
+  "bn_tabu", ## bn_methods (bnlearn)
   ## bnc_methods (bnclassify)
   "bnc_nb", 
   "bnc_tan_cl", 
-  #"bnc_tan_hc", "bnc_fssj", "bnc_bsej",   
+  "bnc_tan_hc", "bnc_fssj", "bnc_bsej",   
   "bnc_3db",   
- ## nnet_methods (nnet)
- "nnet_basic",
- ## glm_methods (glm)
- "glm_binomial",
-  ## simple 
-  "simple" ## simple
+   ## nnet_methods (nnet)
+  "nnet_basic",
+   ## glm_methods (glm)
+  "glm_binomial",
+   ## simple 
+   "simple" ## simple
 )
 
 ##read TABLE.rds
@@ -57,7 +58,7 @@ ggplot(data = data[stat != "time" & classifier %in% classifiers], aes(y = data, 
       l = 0,
       unit = "pt"
     )
-  ) +  
+  ) + xlab("") +  
   ggsave("plot.pdf", width = 7, height = 6, units = "in")
 
 
@@ -89,4 +90,5 @@ ggplot(data = data[stat == "time" & classifier %in% classifiers], aes(y = data, 
       unit = "pt"
     )
   ) + guides(color=guide_legend(nrow=3,byrow=TRUE)) +  
+  xlab("seconds") + 
   ggsave("plot_time.pdf", width = 5, height = 6, units = "in")
