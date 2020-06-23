@@ -30,6 +30,8 @@ classifiers <- c(
   "nnet_basic",
   ## glm_methods (glm)
   "glm_binomial",
+  ## rf_methods (randomForest)
+  "rf_basic",
   "simple" ## simple
 )
 

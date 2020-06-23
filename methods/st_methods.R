@@ -6,7 +6,7 @@ ordering_cmi <- function(train){
   n <- ncol(train) - 1
   free <- names(train)[-1]
   ms <- sapply(free, function(v){
-    infotheo::mutinformation(X = train$answer, Y = train[[v]])
+    infotheo::mutinformation(X = train$answer, Y = train[[v]]) /  infotheo::entropy(train[[v]])
   })
   selected <- names(which.max(ms))
   free <- free[-which.max(ms)]
@@ -14,7 +14,7 @@ ordering_cmi <- function(train){
     ms <- sapply(free, function(v){
       infotheo::condinformation(X = train$answer, 
                                 Y = train[[v]],
-                                S = train[,selected])
+                                S = train[,selected]) /  infotheo::entropy(train[[v]])
     })
     selected <- c(selected, names(which.max(ms)))
     free <- free[-which.max(ms)]
@@ -58,7 +58,7 @@ predict_st <- function(model, train, test, optimizecutoff){
     prob <- predict(model, newdata = train, class = "answer", prob = TRUE )
     
     cutoff <- InformationValue::optimalCutoff(actuals = as.numeric(train$answer) - 1, 
-                                              predictedScores = prob, 
+                                              predictedScores = prob[, 2], 
                                               optimiseFor = "Both")
     prob <- predict(model, newdata = test, class = "answer", prob = TRUE )
     factor(ifelse(prob[, 2] >= cutoff, levels(train$answer)[2], 

@@ -7,6 +7,7 @@ source("methods/bn_methods.R")
 source("methods/bnc_methods.R")
 source("methods/nnet_methods.R")
 source("methods/glm_methods.R")
+source("methods/rf_methods.R")
 
 classifiers <- c(
   ## st_methods (stagedtrees) 
@@ -31,6 +32,8 @@ classifiers <- c(
   "nnet_basic",
   ## glm_methods (glm)
   "glm_binomial",
+  ## rf_methods (randomForest)
+  "rf+basic",
   "simple" ## simple
 )
 

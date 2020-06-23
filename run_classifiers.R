@@ -36,7 +36,7 @@ for (d in datasets){
     for (c_name in torun){
       message(c_name)
       c_fun <- get(c_name)
-      time <- system.time(predict <- c_fun(train, test))[3]
+      time <- system.time(predict <- c_fun(train, test, optimizecutoff = FALSE))[3]
       filename <- paste0(res_path, c_name, "_", r, ".rds" )
       message(filename)
       saveRDS(list(time = time, predict = predict), file = filename)

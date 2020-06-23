@@ -1,30 +1,32 @@
 library(ggplot2)
 library(data.table)
 
-### here select which methods to plot
+### select which methods to plot
 classifiers <- c(
 ## st_methods (stagedtrees)
-  "st_fbhc", 
-  "st_fbhc_mi", 
+#  "st_fbhc", 
+#  "st_fbhc_mi", 
   "st_fbhc_cmi", 
-  "st_fbhc_ch", 
+#  "st_fbhc_ch", 
 #  "st_bj_kl", 
-  "st_naive",
-  "st_naive_mi",
+#  "st_naive",
+#  "st_naive_mi",
   "st_naive_cmi",
   "st_naive_ch",
 #  "st_bhc",
 #  "st_full",
 #  "bn_tabu", ## bn_methods (bnlearn)
   ## bnc_methods (bnclassify)
-#  "bnc_nb", 
-#  "bnc_tan_cl", 
+  "bnc_nb", 
+  "bnc_tan_cl", 
 #  "bnc_tan_hc", "bnc_fssj", "bnc_bsej",   
-#  "bnc_3db",   
+  "bnc_3db",   
    ## nnet_methods (nnet)
-#  "nnet_basic",
+  "nnet_basic",
    ## glm_methods (glm)
 #  "glm_binomial",
+   ## rf_methods (randomForest) 
+  "rf_basic",
    ## simple 
    "simple" ## simple
 )
@@ -40,7 +42,7 @@ data <- as.data.table(AVG)
 ## plot
 ggplot(data = data[stat != "time" & classifier %in% classifiers], aes(y = data, x = value, 
                         group = classifier, color = classifier)) + 
-  geom_jitter(height = 0.2, width = 0) + facet_grid(cols = vars(stat), scales = "free") + 
+  geom_jitter(height = 0.2, width = 0, alpha = 0.5) + facet_grid(cols = vars(stat), scales = "free") + 
   theme_bw() +
   theme(
     legend.position = "top",
@@ -70,7 +72,7 @@ ggplot(data = data[stat != "time" & classifier %in% classifiers], aes(y = data, 
 ## plot time
 ggplot(data = data[stat == "time" & classifier %in% classifiers], aes(y = data, x = value, 
                                                                       group = classifier, color = classifier)) + 
-  geom_jitter(height = 0.2, width = 0) + 
+  geom_jitter(height = 0.2, alpha = 0.5) + 
   theme_bw() +
   scale_x_log10()+
   theme(
