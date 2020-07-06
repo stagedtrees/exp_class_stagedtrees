@@ -7,9 +7,11 @@ classifiers <- c(
   "st_fbhc_mi",
   "st_fbhc_cmi",
   "st_fbhc_ch",
+  "st_bhc_ch",
+  "st_bhc_mi",
   "st_bhc",
   ## st_methods (stagedtrees)
-  "st_bj_kl",
+  "st_bj_kl_ch",
   "st_bj_tv",
   "st_bj_cd",
   "st_naive",
@@ -36,8 +38,7 @@ classifiers <- c(
 )
 
 source("statistics.R")
-k <- 10
-nreps <- 10
+nreps <- 20
 
 TABLE <- array(
   data = NA,

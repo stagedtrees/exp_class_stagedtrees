@@ -6,7 +6,7 @@ ordering_cmi <- function(train){
   n <- ncol(train) - 1
   free <- names(train)[-1]
   ms <- sapply(free, function(v){
-    infotheo::mutinformation(X = train$answer, Y = train[[v]]) /  infotheo::entropy(train[[v]])
+    infotheo::mutinformation(X = train$answer, Y = train[[v]]) 
   })
   selected <- names(which.max(ms))
   free <- free[-which.max(ms)]
@@ -14,7 +14,7 @@ ordering_cmi <- function(train){
     ms <- sapply(free, function(v){
       infotheo::condinformation(X = train$answer, 
                                 Y = train[[v]],
-                                S = train[,selected]) /  infotheo::entropy(train[[v]])
+                                S = train[,selected], method = "mm")
     })
     selected <- c(selected, names(which.max(ms)))
     free <- free[-which.max(ms)]
@@ -37,6 +37,9 @@ ordering_ch <- function(train){
       infotheo::condentropy(X = train[[v]], 
                                 Y = train[,selected])
     })
+    #if (min(ms) > 0.7*log(length(levels(train[[which.min(ms)]])))){
+    #  break
+    #}
     selected <- c(selected, names(which.min(ms)))
     free <- free[-which.min(ms)]
     
@@ -69,7 +72,7 @@ predict_st <- function(model, train, test, optimizecutoff){
 }
 
 st_full <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::full(train, lambda = 1, join_zero = TRUE, order = ordering_mi(train))
+  model <- stagedtrees::full(train, lambda = 1, join_zero = TRUE, order = ordering_ch(train))
   predict_st(model, train, test, optimizecutoff)
 }
 
@@ -121,15 +124,15 @@ st_bhc_mi <- function(train, test, optimizecutoff = FALSE, ...){
   predict_st(model, train, test, optimizecutoff)
 }
 
-st_bhc_cmi <- function(train, test, optimizecutoff = FALSE, ...){
+st_bhc_ch <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::bhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                      order = ordering_cmi(train)))
+                                      order = ordering_ch(train)))
   predict_st(model, train, test, optimizecutoff)
 }
 
-st_bj_kl_mi <- function(train, test, optimizecutoff = FALSE, ...){
+st_bj_kl_ch <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::bj.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                     order = ordering_mi(train)), distance = kl, thr = 0.2)
+                                     order = ordering_ch(train)), distance = kl, thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 

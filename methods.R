@@ -17,7 +17,7 @@ classifiers <- c(
   "st_fbhc_mi", 
   "st_fbhc_cmi", 
   "st_fbhc_ch", 
-  #"st_bhc", 
+  "st_bhc", 
   "st_bj_kl", "st_bj_tv", "st_bj_cd", 
   "st_naive",
   "st_naive_mi",

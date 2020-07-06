@@ -1,8 +1,8 @@
 rm(list = ls())
 all_names <- read.table("datasets_names.tsv")[,1]
 
-nreps <- 10
-k <- 10
+nreps <- 20
+k <- 2
 
 splits_path <- "splits/"
 dir.create(splits_path, showWarnings = FALSE)
