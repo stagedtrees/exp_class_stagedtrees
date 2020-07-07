@@ -2,6 +2,7 @@ library(stagedtrees)
 library(infotheo)
 
 ## maximising conditional mutual information with class 
+## NOT WORKING PROPERLY
 ordering_cmi <- function(train){
   n <- ncol(train) - 1
   free <- names(train)[-1]
@@ -56,6 +57,9 @@ ordering_mi <- function(train){
   names(train)[c(1, 1 + order(ms, decreasing = TRUE))]
 }
 
+## change here to change ordering for all the methods
+ordering <- ordering_mi
+
 predict_st <- function(model, train, test, optimizecutoff){
   if (optimizecutoff){
     prob <- predict(model, newdata = train, class = "answer", prob = TRUE )
@@ -72,105 +76,65 @@ predict_st <- function(model, train, test, optimizecutoff){
 }
 
 st_full <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::full(train, lambda = 1, join_zero = TRUE, order = ordering_ch(train))
+  model <- stagedtrees::full(train, lambda = 1, join_zero = TRUE, order = ordering(train))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_indep <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::indep(train, lambda = 1, order = ordering_mi(train))
+  model <- stagedtrees::indep(train, lambda = 1, order = ordering(train))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_indep <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = ordering_mi(train)), name = "NA")
-  model <- stagedtrees::hc.sevt(model)
+                                                     order = ordering(train)), name = "NA")
+  model <- stagedtrees::hc.sevt(model, exclude = "NA")
   predict_st(model, train, test, optimizecutoff)
   
 }
 
 st_hc_full <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::hc.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                     order = ordering_mi(train)))
+                                     order = ordering(train)), exclude = "NA")
   predict_st(model, train, test, optimizecutoff)
 }
 
-st_fbhc_ch <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                       order = ordering_ch(train)))
-  predict_st(model, train, test, optimizecutoff)
-}
-
-st_fbhc_cmi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                       order = ordering_cmi(train)))
-  predict_st(model, train, test, optimizecutoff)
-}
-
-st_fbhc_mi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                       order = ordering_mi(train)))
-  predict_st(model, train, test, optimizecutoff)
-}
 
 st_fbhc <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1))
+  model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
+                                       order = ordering(train)))
   predict_st(model, train, test, optimizecutoff)
 }
 
-st_bhc_mi <- function(train, test, optimizecutoff = FALSE, ...){
+st_bhc <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::bhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                      order = ordering_mi(train)))
+                                      order = ordering(train)))
   predict_st(model, train, test, optimizecutoff)
 }
 
-st_bhc_ch <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::bhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                      order = ordering_ch(train)))
-  predict_st(model, train, test, optimizecutoff)
-}
-
-st_bj_kl_ch <- function(train, test, optimizecutoff = FALSE, ...){
+st_bj_kl <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::bj.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                     order = ordering_ch(train)), distance = kl, thr = 0.2)
+                                     order = ordering(train)), distance = kl, thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
-st_bj_tv_mi <- function(train, test, optimizecutoff = FALSE, ...){
+st_bj_tv <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::bj.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                     order = ordering_mi(train)), distance = tv, thr = 0.2)
+                                     order = ordering(train)), distance = tv, thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
-st_bj_cd_mi <- function(train, test, optimizecutoff = FALSE, ...){
+st_bj_cd <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::bj.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                     order = ordering_mi(train)), distance = cd, thr = 0.2)
-  predict_st(model, train, test, optimizecutoff)
-}
-
-st_naive_mi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                        order = ordering_mi(train)),
-                                   distance = kl)
-  predict_st(model, train, test, optimizecutoff)
-}
-
-st_naive_cmi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                        order = ordering_cmi(train)),
-                                   distance = kl)
-  predict_st(model, train, test, optimizecutoff)
-}
-
-st_naive_ch <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                        order = ordering_ch(train)),
-                                   distance = kl)
+                                     order = ordering(train)), distance = cd, thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1),
+  model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, 
+                                        order = ordering(train)),
                                    distance = kl)
   predict_st(model, train, test, optimizecutoff)
 }
+
+

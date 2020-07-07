@@ -4,20 +4,12 @@ classifiers <- c(
   "st_indep",
   "st_hc_indep",
   "st_fbhc",
-  "st_fbhc_mi",
-  "st_fbhc_cmi",
-  "st_fbhc_ch",
-  "st_bhc_ch",
-  "st_bhc_mi",
   "st_bhc",
   ## st_methods (stagedtrees)
-  "st_bj_kl_ch",
+  "st_bj_kl",
   "st_bj_tv",
   "st_bj_cd",
   "st_naive",
-  "st_naive_mi",
-  "st_naive_cmi",
-  "st_naive_ch",
   ### st_methods  (stagedtrees)
   "bn_tabu",
   ## bn_methods (bnlearn)
