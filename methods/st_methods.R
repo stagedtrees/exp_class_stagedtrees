@@ -88,14 +88,14 @@ st_indep <- function(train, test, optimizecutoff = FALSE, ...){
 st_hc_indep <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
                                                      order = ordering(train)), name = "NA")
-  model <- stagedtrees::hc.sevt(model, exclude = "NA")
+  model <- stagedtrees::hc.sevt(model, ignore = "NA")
   predict_st(model, train, test, optimizecutoff)
   
 }
 
 st_hc_full <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::hc.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                     order = ordering(train)), exclude = "NA")
+                                     order = ordering(train)), ignore = "NA")
   predict_st(model, train, test, optimizecutoff)
 }
 
