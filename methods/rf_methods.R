@@ -16,7 +16,12 @@ predict_rf <- function(model, train, test, optimizecutoff){
 }
 
 
-rf_basic <- function(train, test, optimizecutoff = FALSE){
-  model <- randomForest(answer ~ ., data = train, ntree = 100)
+rf_1 <- function(train, test, optimizecutoff = FALSE){
+  model <- randomForest(answer ~ ., data = train, nodesize = 1, ntree = 100, mtry = round(sqrt(NCOL(train))) + 1)
+  predict_rf(model, train, test, optimizecutoff)
+}
+
+rf_2 <- function(train, test, optimizecutoff = FALSE){
+  model <- randomForest(answer ~ ., data = train, nodesize = 1, ntree = 200, mtry = round(sqrt(NCOL(train))))
   predict_rf(model, train, test, optimizecutoff)
 }
