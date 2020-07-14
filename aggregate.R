@@ -2,8 +2,8 @@ datasets <- read.table("binary_datasets_names.tsv")[,1]
 classifiers <- c(
   "st_full",
   "st_indep",
-  "st_hc_full",
-  "st_hc_indep",
+  "st_hc_full_mi",
+  "st_hc_indep_mi",
   "st_fbhc",
   "st_fbhc_mi",
   "st_fbhc_cmi",
@@ -87,3 +87,4 @@ for (d in datasets) {
 }
 
 saveRDS(TABLE, "TABLE.rds")
+

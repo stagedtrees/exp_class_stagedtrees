@@ -6,10 +6,16 @@ classifiers <- c(
 ## st_methods (stagedtrees)
 #   "st_full",
   "st_fbhc", 
+  "st_fbhc_ch", 
+  "st_fbhc_cmi", 
+  "st_fbhc_mi", 
   "st_bj_kl", 
-  "st_naive",
-  "st_bhc",
-  "st_hc_indep",
+  "st_naive_ch",
+  "st_naive_mi",
+  "st_naive_cmi",
+  "st_bhc_mi",
+  "st_bhc_cmi",
+  "st_hc_indep_mi",
 ## bn_methods (bnlearn)
 #  "bn_tabu", 
 ## bnc_methods (bnclassify)
@@ -18,7 +24,8 @@ classifiers <- c(
 #  "bnc_tan_hc", "bnc_fssj", "bnc_bsej",   
   "bnc_3db",   
    ## nnet_methods (nnet)
-#  "nnet_basic",
+  "nnet_1",
+  "nnet_2",
    ## glm_methods (glm)
 #  "glm_binomial",
    ## rf_methods (randomForest) 

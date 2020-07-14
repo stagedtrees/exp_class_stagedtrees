@@ -30,7 +30,6 @@ ordering_cmi <- function(train){
   })
   selected <- names(which.max(ms))
   free <- free[-which.max(ms)]
-  print(ms)
   for (i in 2:n){
     ms <- sapply(free, function(v){
       conditional_information(X = train$answer, 
@@ -39,7 +38,6 @@ ordering_cmi <- function(train){
     })
     selected <- c(selected, names(which.max(ms)))
     free <- free[-which.max(ms)]
-    print(ms)
   }
   return(c("answer", selected))
 }
@@ -100,15 +98,16 @@ st_indep <- function(train, test, optimizecutoff = FALSE, ...){
   predict_st(model, train, test, optimizecutoff)
 }
 
-st_hc_indep <- function(train, test, optimizecutoff = FALSE, ...){
+st_hc_indep_mi <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = ordering_mi(train)), name = "NA")
-  model <- stagedtrees::hc.sevt(model)
+                                                     order = ordering_mi(train)), 
+				  name = "NA")
+  model <- stagedtrees::hc.sevt(model, ignore = "NA")
   predict_st(model, train, test, optimizecutoff)
   
 }
 
-st_hc_full <- function(train, test, optimizecutoff = FALSE, ...){
+st_hc_full_mi <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::hc.sevt(full(train, join_zero = TRUE, lambda = 1, 
                                      order = ordering_mi(train)))
   predict_st(model, train, test, optimizecutoff)
@@ -170,26 +169,26 @@ st_bj_cd_mi <- function(train, test, optimizecutoff = FALSE, ...){
 st_naive_mi <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, 
                                         order = ordering_mi(train)),
-                                   distance = kl)
+                                   distance = kl, method = "mcquitty")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive_cmi <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, 
                                         order = ordering_cmi(train)),
-                                   distance = kl)
+                                   distance = kl, method = "mcquitty")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive_ch <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, 
                                         order = ordering_ch(train)),
-                                   distance = kl)
+                                   distance = kl, method = "mcquitty")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1),
-                                   distance = kl)
+                                   distance = kl, method = "mcquitty")
   predict_st(model, train, test, optimizecutoff)
 }
