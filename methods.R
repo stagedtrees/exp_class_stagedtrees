@@ -21,14 +21,14 @@ source("methods/gam_methods.R")
 classifiers <- c(
   "st_full",
   "st_indep",
-  "st_hc_full",
-  "st_hc_indep",
+  # "st_hc_full_mi",
+  # "st_hc_indep_mi",
   "st_fbhc",
   "st_fbhc_mi",
   "st_fbhc_cmi",
   "st_fbhc_ch",
-  "st_bhc_mi",
-  "st_bhc_cmi",
+  # "st_bhc_mi",
+  # "st_bhc_cmi",
   "st_bj_kl_mi",
   "st_bj_tv_mi",
   "st_bj_cd_mi",
@@ -66,7 +66,11 @@ classifiers <- c(
 
 simple <- function(train, test, ...){
   m <- names(which.max(table(train$answer)))
-  r <- rep(m, nrow(test))
-  factor(r, levels = levels(train$answer))
+  r <- rep(m, NROW(test))
+  prob <- ifelse(as.integer(which.max(table(train$answer))) == 2, 1, 0)
+  prob <- rep(prob, NROW(test))
+  pred <- factor(r, levels = levels(train$answer))
+  cutoff <- 0.5
+  return(list(pred = pred, prob = prob, cutoff = cutoff))
 }
 
