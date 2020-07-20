@@ -75,17 +75,24 @@ ordering_mi <- function(train){
 
 predict_st <- function(model, train, test, optimizecutoff){
   if (optimizecutoff){
-    prob <- predict(model, newdata = train, class = "answer", prob = TRUE )
+    prob <- predict(model, newdata = train, class = "answer", prob = TRUE)
     
     cutoff <- InformationValue::optimalCutoff(actuals = as.numeric(train$answer) - 1, 
                                               predictedScores = prob[, 2], 
                                               optimiseFor = "Both")
-    prob <- predict(model, newdata = test, class = "answer", prob = TRUE )
-    factor(ifelse(prob[, 2] >= cutoff, levels(train$answer)[2], 
+    prob <- predict(model, newdata = test, class = "answer", prob = TRUE)
+    pred <- factor(ifelse(prob[, 2] >= cutoff, levels(train$answer)[2], 
                   levels(train$answer)[1]), levels = levels(train$answer))
-  }else{
-    predict(model, newdata = test, class = "answer")
+    prob <- prob[, 2]
   }
+  else{
+    cutoff <- 0.5
+    prob <- predict(model, newdata = test, class = "answer", prob = TRUE)
+    pred <- factor(ifelse(prob[, 2] >= cutoff, levels(train$answer)[2], 
+                          levels(train$answer)[1]), levels = levels(train$answer))
+    prob <- prob[, 2]
+  }
+  return(list(pred = pred, prob = prob, cutoff = cutoff))
 }
 
 st_full <- function(train, test, optimizecutoff = FALSE, ...){
@@ -100,11 +107,10 @@ st_indep <- function(train, test, optimizecutoff = FALSE, ...){
 
 st_hc_indep_mi <- function(train, test, optimizecutoff = FALSE, ...){
   model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = ordering_mi(train)), 
+                                                     order = ordering_mi(train)),
 				  name = "NA")
   model <- stagedtrees::hc.sevt(model, ignore = "NA")
   predict_st(model, train, test, optimizecutoff)
-  
 }
 
 st_hc_full_mi <- function(train, test, optimizecutoff = FALSE, ...){
@@ -192,3 +198,5 @@ st_naive <- function(train, test, optimizecutoff = FALSE, ...){
                                    distance = kl, method = "mcquitty")
   predict_st(model, train, test, optimizecutoff)
 }
+
+

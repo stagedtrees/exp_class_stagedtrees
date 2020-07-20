@@ -9,11 +9,17 @@ predict_svm <- function(model, train, test, optimizecutoff){
                                               optimiseFor = "Both")
     prob <- attr(predict(model, newdata = test, probability = T), "probabilities")
     prob <- prob[, attr(prob, "dimnames")[[2]] == levels(train$answer)[2]]
-    factor(ifelse(prob >= cutoff, levels(train$answer)[2], 
+    pred <- factor(ifelse(prob >= cutoff, levels(train$answer)[2], 
                   levels(train$answer)[1]), levels = levels(train$answer))
-  }else{
-    predict(model, newdata = test, probability = F)
   }
+  else{
+    cutoff <- 0.5
+    prob <- attr(predict(model, newdata = test, probability = T), "probabilities")
+    prob <- prob[, attr(prob, "dimnames")[[2]] == levels(train$answer)[2]]
+    pred <- factor(ifelse(prob >= cutoff, levels(train$answer)[2], 
+                          levels(train$answer)[1]), levels = levels(train$answer))
+  }
+  return(list(pred = pred, prob = prob, cutoff = cutoff))
 }
 
 

@@ -7,11 +7,16 @@ predict_logistic <- function(model, train, test, optimizecutoff){
                                               predictedScores = prob, 
                                               optimiseFor = "Both")
     prob <- predict(model, newdata = test, type = "probs")
-    factor(ifelse(prob >= cutoff, levels(train$answer)[2], 
+    pred <- factor(ifelse(prob >= cutoff, levels(train$answer)[2], 
                   levels(train$answer)[1]), levels = levels(train$answer))
-  }else{
-    predict(model, newdata = test, type = "class")
   }
+  else{
+    cutoff <- 0.5
+    prob <- predict(model, newdata = test, type = "probs")
+    pred <- factor(ifelse(prob >= cutoff, levels(train$answer)[2], 
+                          levels(train$answer)[1]), levels = levels(train$answer))
+  }
+  return(list(pred = pred, prob = prob, cutoff = cutoff))
 }
 
 logistic_basic <- function(train, test, optimizecutoff = FALSE, ...) {

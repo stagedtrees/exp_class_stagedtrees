@@ -2,17 +2,22 @@ library(nnet)
 
 predict_nnet <- function(model, train, test, optimizecutoff){
   if (optimizecutoff){
-    prob <- predict(model, newdata = train, type = "raw" )
+    prob <- predict(model, newdata = train, type = "raw")
     
     cutoff <- InformationValue::optimalCutoff(actuals = as.numeric(train$answer) - 1, 
                                               predictedScores = prob, 
                                               optimiseFor = "Both")
-    prob <- predict(model, newdata = test, type = "raw")
-    factor(ifelse(prob >= cutoff, levels(train$answer)[2], 
+    prob <- c(predict(model, newdata = test, type = "raw"))
+    pred <- factor(ifelse(prob >= cutoff, levels(train$answer)[2], 
                   levels(train$answer)[1]), levels = levels(train$answer))
-  }else{
-    factor(predict(model, newdata = test, type = "class"), levels = levels(train$answer))
   }
+  else{
+    cutoff <- 0.5
+    prob <- c(predict(model, newdata = test, type = "raw"))
+    pred <- factor(ifelse(prob >= cutoff, levels(train$answer)[2], 
+                          levels(train$answer)[1]), levels = levels(train$answer))
+  }
+  return(list(pred = pred, prob = prob, cutoff = cutoff))
 }
 
 

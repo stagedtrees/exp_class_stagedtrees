@@ -7,15 +7,22 @@ predict_rda <- function(model, train, test, optimizecutoff){
                                               predictedScores = prob[, 2], 
                                               optimiseFor = "Both")
     prob <- predict(model, newdata = test)$posterior
-    factor(ifelse(prob[, 2] >= cutoff, levels(train$answer)[2], 
+    pred <- factor(ifelse(prob[, 2] >= cutoff, levels(train$answer)[2], 
                   levels(train$answer)[1]), levels = levels(train$answer))
-  }else{
-    predict(model, newdata = test)$class
+    prob <- prob[, 2]
   }
+  else{
+    cutoff <- 0.5
+    prob <- predict(model, newdata = test)$posterior
+    pred <- factor(ifelse(prob[, 2] >= cutoff, levels(train$answer)[2], 
+                          levels(train$answer)[1]), levels = levels(train$answer))
+    prob <- prob[, 2]
+  }
+  return(list(pred = pred, prob = prob, cutoff = cutoff))
 }
 
 
 regularized_da <- function(train, test, optimizecutoff = FALSE, ...) {
-  model <- rda(answer ~ ., data = train)
+  model <- klaR::rda(answer ~ ., data = train)
   predict_rda(model, train, test, optimizecutoff)
 }
