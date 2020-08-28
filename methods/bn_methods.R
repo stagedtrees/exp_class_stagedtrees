@@ -4,19 +4,22 @@ predict_bn <- function(model, train, test, optimizecutoff){
   if (optimizecutoff){
     prob <- t(attr(predict(model, node = "answer", data = train, prob = TRUE), "prob"))
     attr(prob, "dimnames") <- NULL
-    cutoff <- optimalCutoff(as.numeric(train$answer) - 1, prob[, 2], optimiseFor = "Both")
+    cutoff <- InformationValue::optimalCutoff(as.numeric(train$answer) - 1, prob[, 2], optimiseFor = "Both")
     prob <- t(attr(predict(model, node = "answer", data = test, prob = TRUE), "prob"))
     attr(prob, "dimnames") <- NULL
-    factor(ifelse(prob[, 2] >= cutoff, levels(train$answer)[2], 
+    pred <- factor(ifelse(prob[, 2] >= cutoff, levels(train$answer)[2], 
                               levels(train$answer)[1]), levels = levels(train$answer))
-    
-  }else{
-    prob <- t(attr(predict(model, node = "answer", data = test, prob = TRUE), "prob"))
-    attr(prob, "dimnames") <- NULL
-    factor(ifelse(prob[, 2] >= 0.5, levels(train$answer)[2], 
-                              levels(train$answer)[1]), levels = levels(train$answer))
+    prob <- prob[, 2]
   }
-  
+  else{
+    cutoff <- 0.5
+    prob <- t(attr(predict(model, node = "answer", data = test, prob = TRUE), "prob"))
+    attr(prob, "dimnames") <- NULL
+    pred <- factor(ifelse(prob[, 2] >= cutoff, levels(train$answer)[2], 
+                  levels(train$answer)[1]), levels = levels(train$answer))
+    prob <- prob[, 2]
+  }
+  return(list(pred = pred, prob = prob, cutoff = cutoff))
 }
 
 bn_tabu <- function(train, test, optimizecutoff = FALSE){

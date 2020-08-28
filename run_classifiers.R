@@ -1,5 +1,5 @@
 args <- commandArgs(trailingOnly = TRUE)
-datasets <- read.table("binary_fast_datasets_names.tsv")[,1]
+datasets <- read.table("binary_fast_datasets_names.tsv")[, 1]
 source("methods.R")
 if (length(args) > 0){
   if (base::endsWith(args[1], ".tsv")){ 
@@ -20,7 +20,7 @@ if (length(args) > 1){
   torun <- classifiers
 }
 
-nreps <- 20
+nreps <- 10
 
 dir.create("results/", showWarnings = FALSE)
 for (d in datasets){
@@ -28,17 +28,18 @@ for (d in datasets){
    dir.create(res_path, showWarnings = FALSE)
    data <- readRDS(paste0("datasets/", d, ".rds"))
    split_path <- paste0("splits/", d, "/")
-  for (r in 1:nreps){
+  for (r in 1:nreps){ 
     id_test <- readRDS(paste0(split_path, r, "_id_test.rds"))
     train <- data[-id_test,]
     test <- data[id_test,]
     for (c_name in torun){
       message(c_name)
       c_fun <- get(c_name)
-      time <- system.time(predict <- c_fun(train, test, optimizecutoff = FALSE))[3]
-      filename <- paste0(res_path, c_name, "_", r, ".rds" )
+      time <- system.time(predict <- c_fun(train, test, optimizecutoff = TRUE))[3]
+      filename <- paste0(res_path, c_name, "_", r, ".rds")
       message(filename)
-      saveRDS(list(time = time, predict = predict), file = filename)
+      saveRDS(list(time = time, predict = predict$pred, probability = predict$prob, 
+                   cutoff = predict$cutoff), file = filename)
     }
   }
 }

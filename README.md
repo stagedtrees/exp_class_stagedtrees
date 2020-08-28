@@ -33,9 +33,10 @@
 
 *  Running `aggregate.R` the available results will be evaluated according
 to the measures defined in `statistics.R` and saved in a multidimensional array 
-`TABLE.rds`
+`TABLE.rds`. Values for plotting roc curves are saved into the 
+multidimensional array `ROC_CURVES.rds`.
 
-* The script `plot.R` takes the aggregated table `TABLE.rds` and produces plots. 
+* The script `plot.R` takes the aggregated tables `TABLE.rds` and `ROC_CURVES.rds` and produces plots. 
 
 
 See the [available methods in METHODS.md](METHODS.md) and the available datasets in 

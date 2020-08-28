@@ -1,11 +1,7 @@
 library(pROC)
 
-statistics <- c("time", "accuracy", "balanced_accuracy", "f1"
-		#, "sens"
-		#, 
-	#	"spec", "fn", "fp", 
-                #"error", "precision", "auc", "spec_sens", "cutoff"
-		)
+statistics <- c("time", "accuracy", "balanced_accuracy", "f1", "sens", "spec", 
+                "fn", "fp", "error", "precision", "auc", "cutoff", "spec_sens")
 
 
 time <- function(res, true){
