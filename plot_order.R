@@ -1,7 +1,11 @@
+args <- commandArgs(trailingOnly = TRUE)
+dataset <- "monks1"
+if (length(args) > 0){
+    dataset <- args[1]
+}
 library(ggplot2)
 library(data.table)
 
-dataset <- "monks1"
 
 TABLE <- readRDS(paste0("TABLE_ORDER_", dataset, ".rds"))
 

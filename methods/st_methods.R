@@ -210,3 +210,9 @@ st_fbhc_order <- function(train, test, optimizecutoff = FALSE, order, ...){
 				       order = order))
   predict_st(model, train, test, optimizecutoff)
 }
+
+st_bj_kl_order <- function(train, test, optimizecutoff = FALSE, order, ...){
+  model <- stagedtrees::bj.sevt(full(train, join_zero = TRUE, lambda = 1, 
+                                     order = order), distance = kl, thr = 0.2)
+  predict_st(model, train, test, optimizecutoff)
+}

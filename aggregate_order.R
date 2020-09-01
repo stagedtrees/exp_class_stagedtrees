@@ -1,4 +1,8 @@
+args <- commandArgs(trailingOnly = TRUE)
 dataset <- "monks1"
+if (length(args) > 0){
+    dataset <- args[1]
+}
 classifiers <- c(
 		 "st_naive_order",
 		 "st_fbhc_order"
