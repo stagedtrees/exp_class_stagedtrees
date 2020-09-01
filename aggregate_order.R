@@ -1,6 +1,7 @@
 dataset <- "monks1"
 classifiers <- c(
-		 "st_naive_order"
+		 "st_naive_order",
+		 "st_fbhc_order"
 		 )
 
 source("statistics.R")

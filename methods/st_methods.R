@@ -199,4 +199,14 @@ st_naive <- function(train, test, optimizecutoff = FALSE, ...){
   predict_st(model, train, test, optimizecutoff)
 }
 
+st_naive_order <- function(train, test, optimizecutoff = FALSE, order){
+  model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, order = order),
+                                   distance = kl, method = "mcquitty")
+  predict_st(model, train, test, optimizecutoff)
+}
 
+st_fbhc_order <- function(train, test, optimizecutoff = FALSE, order, ...){
+  model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
+				       order = order))
+  predict_st(model, train, test, optimizecutoff)
+}

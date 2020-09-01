@@ -12,7 +12,8 @@ data <- as.data.table(AVG)
 
 
 ggplot(data = data[stat %in% c("accuracy")], 
-       aes(value)) + 
+       aes(value, group = classifier, color = classifier)) + 
   geom_density() + 
   theme_bw() +  
-  ggsave("plot_accuracy_order.pdf", width = 7, height = 6, units = "in")
+  ggsave(paste0("plot_accuracy_order_",dataset,"_",".pdf"), 
+	 width = 7, height = 6, units = "in")
