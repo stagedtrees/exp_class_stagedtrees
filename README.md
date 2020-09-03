@@ -6,11 +6,11 @@
    all datasets (by default now only on the fast binary datasets). 
    You can pass optional arguments, in that case the format is: 
    ```
-   Rscript run_classifier.R data class1 class2 class3 ... 
+   Rscript run_classifier.R DATA CLASS1 CLASS2 CLASS3 ... 
    ```
-   where `data` can be the name of one of the datasets (e.g. `Asym`) or the 
+   where `DATA` can be the name of one of the datasets (e.g. `Asym`) or the 
    name of a tsv file containing a list of datasets 
-   (e.g. `binary_fast_datasets_names.tsv`). The arguments `class1 class2 ... `  
+   (e.g. `binary_fast_datasets_names.tsv`). The arguments `CLASS1 CLASS2 ... `  
    are identifiers of classifiers: the name of a method (e.g. `bnc_nb` for the 
    naive bayes implemented in bnclassify) or the name of a family of methods such as
    `bnc_` in that case all classifiers in the `bnc_` family will be executed (the 
@@ -38,6 +38,16 @@ multidimensional array `ROC_CURVES.rds`.
 
 * The script `plot.R` takes the aggregated tables `TABLE.rds` and `ROC_CURVES.rds` and produces plots. 
 
-
 See the [available methods in METHODS.md](METHODS.md) and the available datasets in 
 [datasets_names.tsv](datasets_names.tsv).  
+
+
+### order experiments
+
+* `Rscript run_order.R DATA st_naive_order st_fbhc_order` 
+
+* `Rscript aggregate_order.R DATA` 
+
+* `Rscript plot_order.R DATA` 
+
+where `DATA` is the name of one of the datasets.
