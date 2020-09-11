@@ -1,5 +1,5 @@
-### all classifers are a function of train and test (plu additional args)
-### and return predictions
+### all classifers are a function of train and test (plus additional args)
+### and return probabilities, predictions and cutoff.
 
 source("methods/st_methods.R")
 source("methods/bn_methods.R")
@@ -19,23 +19,19 @@ source("methods/svm_methods.R")
 source("methods/gam_methods.R")
 
 classifiers <- c(
-  "st_full",
-  "st_indep",
-  # "st_hc_full_mi",
-  # "st_hc_indep_mi",
-  "st_fbhc",
-  "st_fbhc_mi",
-  "st_fbhc_cmi",
-  "st_fbhc_ch",
-  # "st_bhc_mi",
-  # "st_bhc_cmi",
-  "st_bj_kl_mi",
-  "st_bj_tv_mi",
-  "st_bj_cd_mi",
-  "st_naive",
-  "st_naive_mi",
-  "st_naive_cmi",
-  "st_naive_ch",
+  "st_full", "st_full_mi", "st_full_cmi", "st_full_ch",
+  "st_indep", "st_indep_mi", "st_indep_cmi", "st_indep_ch",
+  "st_hc_indep_5", "st_hc_indep_mi_5", "st_hc_indep_cmi_5", "st_hc_indep_ch_5",
+  "st_hc_indep_7", "st_hc_indep_mi_7", "st_hc_indep_cmi_7", "st_hc_indep_ch_7",
+  "st_hc_full_5", "st_hc_full_mi_5", "st_hc_full_cmi_5", "st_hc_full_ch_5",
+  # "st_hc_full_7", "st_hc_full_mi_7", "st_hc_full_cmi_7", "st_hc_full_ch_7",
+  "st_fbhc", "st_fbhc_mi", "st_fbhc_cmi", "st_fbhc_ch",
+  "st_bhc_5", "st_bhc_mi_5", "st_bhc_cmi_5", "st_bhc_ch_5",
+  "st_bhc_7", "st_bhc_mi_7", "st_bhc_cmi_7", "st_bhc_ch_7",
+  "st_bj_kl", "st_bj_kl_mi", "st_bj_kl_cmi", "st_bj_kl_ch",
+  "st_bj_tv", "st_bj_tv_mi", "st_bj_tv_cmi", "st_bj_tv_ch",
+  "st_bj_cd", "st_bj_cd_mi", "st_bj_cd_cmi", "st_bj_cd_ch",
+  "st_naive", "st_naive_mi", "st_naive_cmi", "st_naive_ch",
   "bn_tabu",
   "bn_hc",
   "bnc_nb",
