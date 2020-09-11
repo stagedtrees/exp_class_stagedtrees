@@ -17,7 +17,9 @@ data <- as.data.table(AVG)
 
 ggplot(data = data[stat %in% c("accuracy")], 
        aes(value, group = classifier, color = classifier)) + 
-  geom_density() + 
+  geom_boxplot() + 
+# geom_density() + 
+# geom_histogram() + 
   theme_bw() +  
   ggsave(paste0("plot_accuracy_order_",dataset,"_",".pdf"), 
 	 width = 7, height = 6, units = "in")
