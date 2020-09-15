@@ -1,3 +1,4 @@
 results/*
 TABLE.rds
 *.pdf
+.Rproj.user

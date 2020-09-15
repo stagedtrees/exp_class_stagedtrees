@@ -1,6 +1,10 @@
 library(ggplot2)
 library(data.table)
 
+datasets <- factor(read.table("binary_fast_datasets_names.tsv")[, 1])
+
+nreps <- 10
+
 ### select which methods to plot
 classifiers <- c(
   "st_full", "st_full_mi", "st_full_cmi", "st_full_ch",

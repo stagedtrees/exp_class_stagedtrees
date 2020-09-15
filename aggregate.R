@@ -42,7 +42,7 @@ classifiers <- c(
 
 source("statistics.R")
 # k <- 5
-nreps <- 9
+nreps <- 10
 
 TABLE <- array(
   data = NA,

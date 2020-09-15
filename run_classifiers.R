@@ -22,20 +22,20 @@ if (length(args) > 1){
 
 nreps <- 10
 
-dir.create("results_no_cutoff/", showWarnings = FALSE)
+# dir.create("results/", showWarnings = FALSE)
 for (d in datasets){
-   res_path <- paste0("results_no_cutoff/",d,"/") 
+   res_path <- paste0("results/",d,"/") 
    dir.create(res_path, showWarnings = FALSE)
    data <- readRDS(paste0("datasets/", d, ".rds"))
    split_path <- paste0("splits/", d, "/")
-  for (r in 3:4){ 
+  for (r in 1:10){ 
     id_test <- readRDS(paste0(split_path, r, "_id_test.rds"))
     train <- data[-id_test,]
     test <- data[id_test,]
     for (c_name in torun){
       message(c_name)
       c_fun <- get(c_name)
-      time <- system.time(predict <- c_fun(train, test, optimizecutoff = FALSE))[3]
+      time <- system.time(predict <- c_fun(train, test, optimizecutoff = TRUE))[3]
       filename <- paste0(res_path, c_name, "_", r, ".rds")
       message(filename)
       saveRDS(list(time = time, predict = predict$pred, probability = predict$prob, 
