@@ -1,10 +1,10 @@
 args <- commandArgs(trailingOnly = TRUE)
-datasets <- read.table("binary_fast_datasets_names.tsv")[, 1]
+datasets <- factor(read.table("binary_fast_datasets_names.tsv")[, 1])
 source("methods.R")
 if (length(args) > 0){
   if (base::endsWith(args[1], ".tsv")){ 
     datasets <- read.table(args[1])[,1]    
-  }else{ ##it is the name of a dataset
+  }else{ ## it is the name of a dataset
     datasets <- args[1]
   }
 }
@@ -22,13 +22,13 @@ if (length(args) > 1){
 
 nreps <- 10
 
-dir.create("results/", showWarnings = FALSE)
+# dir.create("results/", showWarnings = FALSE)
 for (d in datasets){
    res_path <- paste0("results/",d,"/") 
    dir.create(res_path, showWarnings = FALSE)
    data <- readRDS(paste0("datasets/", d, ".rds"))
    split_path <- paste0("splits/", d, "/")
-  for (r in 1:nreps){ 
+  for (r in 1:10){ 
     id_test <- readRDS(paste0(split_path, r, "_id_test.rds"))
     train <- data[-id_test,]
     test <- data[id_test,]
