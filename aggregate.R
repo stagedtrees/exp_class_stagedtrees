@@ -13,6 +13,7 @@ classifiers <- c(
   "st_bj_tv", "st_bj_tv_mi", "st_bj_tv_cmi", "st_bj_tv_ch",
   "st_bj_cd", "st_bj_cd_mi", "st_bj_cd_cmi", "st_bj_cd_ch",
   "st_naive", "st_naive_mi", "st_naive_cmi", "st_naive_ch",
+  "st_kmeans", "st_kmeans_mi", "st_kmeans_cmi", "st_kmeans_ch",
   "bn_tabu",
   "bn_hc",
   "bnc_nb",

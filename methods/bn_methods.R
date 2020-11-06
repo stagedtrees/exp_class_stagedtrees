@@ -23,12 +23,14 @@ predict_bn <- function(model, train, test, optimizecutoff){
 }
 
 bn_tabu <- function(train, test, optimizecutoff = FALSE){
+  set.seed(2020)
   bn <- bnlearn::tabu(train)
   bn.fit <- bn.fit(bn, train)
   predict_bn(bn.fit, train, test, optimizecutoff)
 }
 
 bn_hc <- function(train, test, optimizecutoff = FALSE) {
+  set.seed(2020)
   bn <- bnlearn::hc(train)
   bn.fit <- bn.fit(bn, train)
   predict_bn(bn.fit, train, test, optimizecutoff)

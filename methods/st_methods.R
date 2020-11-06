@@ -26,7 +26,7 @@ ordering_cmi <- function(train){
   n <- ncol(train) - 1
   free <- names(train)[-1]
   ms <- sapply(free, function(v){
-    infotheo::mutinformation(X = train$answer, Y = train[[v]]) /  infotheo::entropy(train[[v]])
+    infotheo::mutinformation(X = train$answer, Y = train[[v]]) / infotheo::entropy(train[[v]])
   })
   selected <- names(which.max(ms))
   free <- free[-which.max(ms)]
@@ -34,7 +34,7 @@ ordering_cmi <- function(train){
     ms <- sapply(free, function(v){
       conditional_information(X = train$answer, 
                               Y = train[[v]],
-                              S = train[, selected]) /  infotheo::entropy(train[[v]])
+                              S = train[, selected]) / infotheo::entropy(train[[v]])
     })
     selected <- c(selected, names(which.max(ms)))
     free <- free[-which.max(ms)]
@@ -55,7 +55,7 @@ ordering_ch <- function(train){
   for (i in 2:n){
     ms <- sapply(free, function(v){
       infotheo::condentropy(X = train[[v]], 
-                                Y = train[,selected])
+                                Y = train[, selected])
     })
     selected <- c(selected, names(which.min(ms)))
     free <- free[-which.min(ms)]
@@ -96,387 +96,423 @@ predict_st <- function(model, train, test, optimizecutoff){
 }
 
 st_full <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::full(train, lambda = 1, join_zero = TRUE)
+  model <- full(train, lambda = 1, join_unobserved = TRUE)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_full_mi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::full(train, lambda = 1, join_zero = TRUE, order = ordering_mi(train))
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_mi(train))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_full_ch <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::full(train, lambda = 1, join_zero = TRUE, order = ordering_ch(train))
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_ch(train))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_full_cmi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::full(train, lambda = 1, join_zero = TRUE, order = ordering_cmi(train))
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_indep <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::indep(train, lambda = 1)
+  model <- indep(train, lambda = 1, join_unobserved = TRUE)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_indep_mi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::indep(train, lambda = 1, order = ordering_mi(train))
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = ordering_mi(train))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_indep_ch <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::indep(train, lambda = 1, order = ordering_ch(train))
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = ordering_ch(train))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_indep_cmi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::indep(train, lambda = 1, order = ordering_cmi(train))
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_indep_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- colnames(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_indep_mi_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_mi(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_indep_ch_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_ch(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_indep_cmi_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_cmi(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_indep_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- colnames(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_indep_mi_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_mi(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_indep_ch_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_ch(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_indep_cmi_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_cmi(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(stagedtrees::indep(train, lambda = 1,
-                                                     order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- indep(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_full_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- colnames(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, 
-                                     order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_full_mi_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_mi(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, 
-                                       order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_full_cmi_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_cmi(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, 
-                                       order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_full_ch_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_ch(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, 
-                                       order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_full_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- colnames(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, 
-                                       order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_full_cmi_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_cmi(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, 
-                                       order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_full_mi_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_mi(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, 
-                                       order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_hc_full_ch_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_ch(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, 
-                                       order = order_var), name = "NA")
-  model <- stagedtrees::hc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_hc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_fbhc <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1), name = "NA")
-  model <- stagedtrees::fbhc.sevt(model)
+  set.seed(2020)
+  model <- full(train, lambda = 1, join_unobserved = TRUE)
+  model <- stages_fbhc(model)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_fbhc_ch <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_ch(train)), name = "NA")
-  model <- stagedtrees::fbhc.sevt(model)
+  set.seed(2020)
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_ch(train))
+  model <- stages_fbhc(model)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_fbhc_cmi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_cmi(train)), name = "NA")
-  model <- stagedtrees::fbhc.sevt(model)
+  set.seed(2020)
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
+  model <- stages_fbhc(model)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_fbhc_mi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_mi(train)), name = "NA")
-  model <- stagedtrees::fbhc.sevt(model)
+  set.seed(2020)
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_mi(train))
+  model <- stages_fbhc(model)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bhc_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- colnames(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = order_var), name = "NA")
-  model <- stagedtrees::bhc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_bhc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bhc_mi_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_mi(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = order_var), name = "NA")
-  model <- stagedtrees::bhc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_bhc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bhc_cmi_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_cmi(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = order_var), name = "NA")
-  model <- stagedtrees::bhc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_bhc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bhc_ch_5 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_ch(train)
-  if(length(order_var) > 5) { order_var <- order_var[1:5] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = order_var), name = "NA")
-  model <- stagedtrees::bhc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 5) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 5) { order_var <- order_var[2:5] }
+  model <- stages_bhc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bhc_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- colnames(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = order_var), name = "NA")
-  model <- stagedtrees::bhc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_bhc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bhc_mi_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_mi(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = order_var), name = "NA")
-  model <- stagedtrees::bhc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_bhc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bhc_cmi_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_cmi(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = order_var), name = "NA")
-  model <- stagedtrees::bhc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_bhc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bhc_ch_7 <- function(train, test, optimizecutoff = FALSE, ...){
   order_var <- ordering_ch(train)
-  if(length(order_var) > 7) { order_var <- order_var[1:7] }
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = order_var), name = "NA")
-  model <- stagedtrees::bhc.sevt(model, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = order_var)
+  if(length(order_var) <= 7) order_var <- order_var[2:NCOL(train)]
+  if(length(order_var) > 7) { order_var <- order_var[2:7] }
+  model <- stages_bhc(model, scope = order_var)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_kl <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = kl, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE)
+  model <- stages_bj(model, distance = "kullback", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_kl_mi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_mi(train)), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = kl, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_mi(train))
+  model <- stages_bj(model, distance = "kullback", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_kl_cmi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_cmi(train)), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = kl, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
+  model <- stages_bj(model, distance = "kullback", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_kl_ch <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_ch(train)), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = kl, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_ch(train))
+  model <- stages_bj(model, distance = "kullback", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_tv <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = tv, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE)
+  model <- stages_bj(model, distance = "totvar", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_tv_mi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_mi(train)), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = tv, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_mi(train))
+  model <- stages_bj(model, distance = "totvar", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_tv_cmi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_cmi(train)), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = tv, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
+  model <- stages_bj(model, distance = "totvar", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_tv_ch <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_ch(train)), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = tv, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_ch(train))
+  model <- stages_bj(model, distance = "totvar", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_cd <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = cd, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE)
+  model <- stages_bj(model, distance = "chandarw", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_cd_mi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_mi(train)), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = cd, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_mi(train))
+  model <- stages_bj(model, distance = "chandarw", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_cd_cmi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_cmi(train)), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = cd, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
+  model <- stages_bj(model, distance = "chandarw", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_cd_ch <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_ch(train)), name = "NA")
-  model <- stagedtrees::bj.sevt(model, distance = cd, thr = 0.2, ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_ch(train))
+  model <- stages_bj(model, distance = "chandarw", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1), name = "NA")
-  model <- stagedtrees::naive.sevt(model, distance = kl, method = "mcquitty", ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE)
+  model <- stages_hclust(model, k = 2, distance = "totvar", method = "mcquitty")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive_mi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_mi(train)), name = "NA")
-  model <- stagedtrees::naive.sevt(model, distance = kl, method = "mcquitty", ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_mi(train))
+  model <- stages_hclust(model, k = 2, distance = "totvar", method = "mcquitty")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive_cmi <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_cmi(train)), name = "NA")
-  model <- stagedtrees::naive.sevt(model, distance = kl, method = "mcquitty", ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
+  model <- stages_hclust(model, k = 2, distance = "totvar", method = "mcquitty")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive_ch <- function(train, test, optimizecutoff = FALSE, ...){
-  model <- stagedtrees::join_zero(full(train, lambda = 1, order = ordering_ch(train)), name = "NA")
-  model <- stagedtrees::naive.sevt(model, distance = kl, method = "mcquitty", ignore = "NA")
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_ch(train))
+  model <- stages_hclust(model, k = 2, distance = "totvar", method = "mcquitty")
+  predict_st(model, train, test, optimizecutoff)
+}
+
+st_kmeans <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- full(train, lambda = 1, join_unobserved = TRUE)
+  model <- stages_kmeans(model, k = 2, algorithm = "Hartigan-Wong")
+  predict_st(model, train, test, optimizecutoff)
+}
+
+st_kmeans_mi <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_mi(train))
+  model <- stages_kmeans(model, k = 2, algorithm = "Hartigan-Wong")
+  predict_st(model, train, test, optimizecutoff)
+}
+
+st_kmeans_cmi <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
+  model <- stages_kmeans(model, k = 2, algorithm = "Hartigan-Wong")
+  predict_st(model, train, test, optimizecutoff)
+}
+
+st_kmeans_ch <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_ch(train))
+  model <- stages_kmeans(model, k = 2, algorithm = "Hartigan-Wong")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive_order <- function(train, test, optimizecutoff = FALSE, order){
-  model <- stagedtrees::naive.sevt(full(train, join_zero = TRUE, lambda = 1, order = order),
-                                   distance = kl, method = "mcquitty")
+  model <- stages_hclust(full(train, join_unobserved = TRUE, lambda = 1, order = order),
+                                   distance = "totvar", method = "mcquitty")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_fbhc_order <- function(train, test, optimizecutoff = FALSE, order, ...){
-  model <- stagedtrees::fbhc.sevt(full(train, join_zero = TRUE, lambda = 1, 
+  model <- stages_fbhc(full(train, join_unobserved = TRUE, lambda = 1, 
 				       order = order))
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_bj_kl_order <- function(train, test, optimizecutoff = FALSE, order, ...){
-  model <- stagedtrees::bj.sevt(full(train, join_zero = TRUE, lambda = 1, 
-                                     order = order), distance = kl, thr = 0.2)
+  model <- stages_bj(full(train, join_unobserved = TRUE, lambda = 1, 
+                                     order = order), distance = "kullback", thr = 0.2)
   predict_st(model, train, test, optimizecutoff)
 }
