@@ -175,11 +175,18 @@ dev.off()
 
 ##read TABLE.rds
 TABLE <- readRDS("TABLE.rds")
+TABLE_NO_CUTOFF <- readRDS("TABLE_NO_CUTOFF.rds")
+
 ## compute averages
 AVG <- apply(TABLE, c(1,2,3), mean, na.rm = TRUE)
+AVG_NO_CUTOFF <- apply(TABLE_NO_CUTOFF, c(1,2,3), mean, na.rm = TRUE)
+
+saveRDS(AVG, "AVG.rds")
+saveRDS(AVG_NO_CUTOFF, "AVG_NO_CUTOFF.rds")
 
 ## transform to data.table
 data <- as.data.table(AVG)
+data_no_cutoff <- as.data.table(AVG_NO_CUTOFF)
 
 
 
