@@ -8,3 +8,4 @@ AVG*.tex
 ROC*.rds
 *.pdf
 .Rproj.user
+.Rhistory
