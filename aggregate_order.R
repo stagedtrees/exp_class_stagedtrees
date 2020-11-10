@@ -5,7 +5,8 @@ if (length(args) > 0){
 }
 classifiers <- c(
 		 "st_naive_order",
-		 "st_fbhc_order"
+		 "st_fbhc_order" #,
+		 #"st_bj_kl_order"
 		 )
 
 source("statistics.R")

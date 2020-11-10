@@ -500,8 +500,9 @@ st_kmeans_ch <- function(train, test, optimizecutoff = FALSE, ...){
 }
 
 st_naive_order <- function(train, test, optimizecutoff = FALSE, order){
-  model <- stages_hclust(full(train, join_unobserved = TRUE, lambda = 1, order = order),
-                                   distance = "totvar", method = "mcquitty")
+  model <- stages_hclust(full(train, join_unobserved = TRUE,
+			      lambda = 1, order = order),
+                              distance = "totvar", method = "mcquitty")
   predict_st(model, train, test, optimizecutoff)
 }
 
