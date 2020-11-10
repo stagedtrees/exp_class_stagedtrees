@@ -506,6 +506,13 @@ st_naive_order <- function(train, test, optimizecutoff = FALSE, order){
   predict_st(model, train, test, optimizecutoff)
 }
 
+st_naive_hl_order <- function(train, test, optimizecutoff = FALSE, order){
+  model <- stages_hclust(full(train, join_unobserved = TRUE,
+			      lambda = 1, order = order),
+                              distance = "hellinger", method = "mcquitty")
+  predict_st(model, train, test, optimizecutoff)
+}
+
 st_fbhc_order <- function(train, test, optimizecutoff = FALSE, order, ...){
   model <- stages_fbhc(full(train, join_unobserved = TRUE, lambda = 1, 
 				       order = order))

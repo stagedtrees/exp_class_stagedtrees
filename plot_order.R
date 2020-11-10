@@ -23,12 +23,12 @@ data_cmich <- as.data.table(AVG_OR)[data == dataset &
 				    classifier %in% classifiers]
 
 ggplot(data = data[stat %in% c("accuracy")], 
-       aes(x = sub("_order","",classifier), y = value, 
+       aes(y = sub("_order","",classifier), x = value, 
 	   group = sub("_order","",classifier))) + 
-#  geom_violin() + 
-  geom_boxplot() + 
-  geom_point(aes(x = sub("_cmi|_ch", "", classifier), 
-                 y = value, color = sapply(strsplit(classifier, "_"), tail, n = 1), 
+  geom_violin() + 
+#  geom_boxplot() + 
+  geom_point(aes(y = sub("_cmi|_ch", "", classifier), 
+                 x = value, color = sapply(strsplit(classifier, "_"), tail, n = 1), 
                  shape = sapply(strsplit(classifier, "_"), tail, n = 1)),
              size = 3,
              data = data_cmich, show.legend =  TRUE) + 
