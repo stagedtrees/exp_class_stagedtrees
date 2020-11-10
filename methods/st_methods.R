@@ -391,6 +391,24 @@ st_bj_kl_mi <- function(train, test, optimizecutoff = FALSE, ...){
   predict_st(model, train, test, optimizecutoff)
 }
 
+st_bj_kl_01_cmi <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
+  model <- stages_bj(model, distance = "kullback", thr = 0.01)
+  predict_st(model, train, test, optimizecutoff)
+}
+
+st_bj_kl_05_cmi <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
+  model <- stages_bj(model, distance = "kullback", thr = 0.05)
+  predict_st(model, train, test, optimizecutoff)
+}
+
+st_bj_kl_20_cmi <- function(train, test, optimizecutoff = FALSE, ...){
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
+  model <- stages_bj(model, distance = "kullback", thr = 0.2)
+  predict_st(model, train, test, optimizecutoff)
+}
+
 st_bj_kl_cmi <- function(train, test, optimizecutoff = FALSE, ...){
   model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
   model <- stages_bj(model, distance = "kullback", thr = 0.2)
