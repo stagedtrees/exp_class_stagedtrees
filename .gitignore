@@ -4,5 +4,6 @@ TABLE.rds
 TABLE_*.rds
 AVG*.rds
 AVG*.tex
+ROC*.rds
 *.pdf
 .Rproj.user
