@@ -13,70 +13,14 @@ classifiers <- c("st_full_cmi", "st_indep_cmi", "st_hc_indep_cmi_5", "st_hc_inde
                  "nnet_1", "rf_1", "logistic_basic", "cl_tree_1", "regularized_da", "naive_bayes_1",
                  "boosting_basic", "bagging_basic", "svm_basic", "gam_basic", "adaboost_basic")
 
-
-##read ROC_CURVE.rds
-ROC_CURVE <- readRDS("ROC_CURVE.rds")
-
-constantwise_function <- function(x, x.val, y.val) {
-  x.val <- sort(as.numeric(na.exclude(1 - x.val)))
-  y.val <- sort(as.numeric(na.exclude(y.val)))
-  out <- 0
-  
-  for(i in 1:(length(x.val) - 1)) {
-    if(x > x.val[i] & x <= x.val[i+1]) {
-      out <- ((y.val[i] - y.val[i+1]) / (x.val[i] - x.val[i+1])) * x + y.val[i] - 
-        ((y.val[i] - y.val[i+1]) / (x.val[i] - x.val[i+1])) * x.val[i]
-    }
-  }
-  return(out)
-}
-
-constantwise_function <- Vectorize(constantwise_function, "x")
-
-interpolation <- function(x.val, y.val) {
-  y <- NULL
-  count <- 0
-  for(i in c(seq(0, 0.3, length.out = 70), seq(0.3, 0.8, length.out = 24), 
-             seq(0.8, 1, length.out = 24))) {
-    count <- count + 1
-    y[count] <- constantwise_function(i, x.val, y.val)
-  }
-  return(c(0, y, 1))
-}
-
-interpolated_sensitivity <- array(
-  data = rep(NA, 120),
-  dim = c(
-    length(datasets),
-    length(classifiers),
-    nreps,
-    120 
-  ),
-  dimnames = list(
-    data = datasets,
-    classifier = classifiers,
-    rep = 1:nreps,
-    values = 1:120
-  )
-)
-
-for(i in 1:length(datasets)) {
-  for(j in 1:length(classifiers)) {
-    for(k in 1:nreps) {
-      interpolated_sensitivity[i, j, k, ] <- interpolation(ROC_CURVE[1, i, j, k, ], ROC_CURVE[2, i, j, k, ])
-    }
-  }
-}
+## read .rds files
+AVG <- readRDS("AVG.rds")
+data <- as.data.table(AVG)
+AVG_ROC_CURVE <- readRDS("AVG_ROC_CURVE.rds")
 
 # they are the same for all roc curve, so now it is reasonable to compute the mean between bootstrap iterations.
 fixed_specificities <- c(0, seq(0, 0.3, length.out = 70), seq(0.3, 0.8, length.out = 24), 
                          seq(0.8, 1, length.out = 24), 1)
-
-
-AVG_ROC_CURVE <- apply(interpolated_sensitivity, c(1,2,4), mean)
-saveRDS(AVG_ROC_CURVE, "AVG_ROC_CURVE.rds")
-AVG_ROC_CURVE <- readRDS("AVG_ROC_CURVE.rds")
-
 
 pdf("roc_curves1.pdf")
 par(mfrow = c(2, 2))
@@ -137,19 +81,6 @@ dev.off()
 ################################################################################################################
 ################################################################################################################
 ################################################################################################################
-
-
-##read TABLE.rds
-TABLE <- readRDS("TABLE.rds")
-
-## compute averages
-AVG <- apply(TABLE, c(1,2,3), mean, na.rm = TRUE)
-saveRDS(AVG, "AVG.rds")
-AVG <- readRDS("AVG.rds")
-
-## transform to data.table
-data <- as.data.table(AVG)
-
 
 
 ## plot accuracies
@@ -244,8 +175,8 @@ ggplot(data = data[stat %in% c("sens", "fn", "spec", "fp") & classifier %in% cla
 
 
 
-## plot auc - cutoff - precision - f1
-ggplot(data = data[stat %in% c("auc", "cutoff", "precision", "f1") & classifier %in% classifiers], aes(y = data, x = value, 
+## plot auc - precision - f1
+ggplot(data = data[stat %in% c("auc", "precision", "f1") & classifier %in% classifiers], aes(y = data, x = value, 
                                                                                                group = classifier, color = classifier)) + 
   geom_jitter(height = 0.2, width = 0, alpha = 0.5) + facet_grid(cols = vars(stat), scales = "free") + 
   theme_bw() +
@@ -270,4 +201,4 @@ ggplot(data = data[stat %in% c("auc", "cutoff", "precision", "f1") & classifier 
       unit = "pt"
     )
   ) + xlab("") +  
-  ggsave("plot_auc_cutoff_precision_f1.pdf", width = 7, height = 6, units = "in")
+  ggsave("plot_auc_precision_f1.pdf", width = 7, height = 6, units = "in")
