@@ -22,17 +22,17 @@ if (length(args) > 1){
 
 nreps <- 10
 
-# dir.create("results/", showWarnings = FALSE)
+dir.create("results/", showWarnings = FALSE)
 set.seed(2020)
-for (d in datasets[15]){
-  message(d)
+for (d in datasets[16]){
+  # message(d)
   timestamp()
    res_path <- paste0("results/",d,"/") 
    dir.create(res_path, showWarnings = FALSE)
    data <- readRDS(paste0("datasets/", d, ".rds"))
    split_path <- paste0("splits/", d, "/")
   for (r in 1:nreps){ 
-    # message(r)
+    message(r)
     id_test <- readRDS(paste0(split_path, r, "_id_test.rds"))
     train <- data[-id_test,]
     test <- data[id_test,]
@@ -41,7 +41,7 @@ for (d in datasets[15]){
       # {
       #   next
       # }
-      # message(c_name)
+      message(c_name)
       c_fun <- get(c_name)
       time <- system.time(predict <- c_fun(train, test, optimizecutoff = FALSE))[3]
       filename <- paste0(res_path, c_name, "_", r, ".rds")

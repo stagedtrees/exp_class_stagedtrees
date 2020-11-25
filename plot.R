@@ -67,7 +67,7 @@ dev.off()
 pdf("roc_curves4.pdf")
 par(mfrow = c(2, 2))
 colors <- rainbow(length(classifiers) - 1)
-for(j in 13:15) {
+for(j in 13:16) {
   plot(fixed_specificities, AVG_ROC_CURVE[j, 1, ], lwd = 0.5,
        type = "l", xlab = "1 - Specificity", ylab = "Sensitivity", 
        main = attr(AVG_ROC_CURVE, "dimnames")$data[j], xlim = c(0, 1), ylim = c(0, 1))

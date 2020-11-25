@@ -471,25 +471,25 @@ st_bj_cd_ch <- function(train, test, optimizecutoff = FALSE, ...){
 
 st_naive <- function(train, test, optimizecutoff = FALSE, ...){
   model <- full(train, lambda = 1, join_unobserved = TRUE)
-  model <- stages_hclust(model, k = 2, distance = "totvar", method = "mcquitty")
+  model <- stages_hclust(model, k = 2, distance = "totvar", method = "complete")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive_mi <- function(train, test, optimizecutoff = FALSE, ...){
   model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_mi(train))
-  model <- stages_hclust(model, k = 2, distance = "totvar", method = "mcquitty")
+  model <- stages_hclust(model, k = 2, distance = "totvar", method = "complete")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive_cmi <- function(train, test, optimizecutoff = FALSE, ...){
   model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
-  model <- stages_hclust(model, k = 2, distance = "totvar", method = "mcquitty")
+  model <- stages_hclust(model, k = 2, distance = "totvar", method = "complete")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive_ch <- function(train, test, optimizecutoff = FALSE, ...){
   model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_ch(train))
-  model <- stages_hclust(model, k = 2, distance = "totvar", method = "mcquitty")
+  model <- stages_hclust(model, k = 2, distance = "totvar", method = "complete")
   predict_st(model, train, test, optimizecutoff)
 }
 
@@ -520,14 +520,14 @@ st_kmeans_ch <- function(train, test, optimizecutoff = FALSE, ...){
 st_naive_order <- function(train, test, optimizecutoff = FALSE, order){
   model <- stages_hclust(full(train, join_unobserved = TRUE,
 			      lambda = 1, order = order),
-                              distance = "totvar", method = "mcquitty")
+                              distance = "totvar", method = "complete")
   predict_st(model, train, test, optimizecutoff)
 }
 
 st_naive_hl_order <- function(train, test, optimizecutoff = FALSE, order){
   model <- stages_hclust(full(train, join_unobserved = TRUE,
 			      lambda = 1, order = order),
-                              distance = "hellinger", method = "mcquitty")
+                              distance = "hellinger", method = "complete")
   predict_st(model, train, test, optimizecutoff)
 }
 
