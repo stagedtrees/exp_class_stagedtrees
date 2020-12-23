@@ -41,7 +41,7 @@ for (d in datasets){
 				     time <- system.time(predict <- c_fun(train, 
 									  test,
 									  order = order,
-									  optimizecutoff = TRUE))[3]
+									  optimizecutoff = FALSE))[3]
 				     filename <- paste0(res_path, c_name, "_",k, "_",
 						       	r, ".rds")
 				     message(filename)
