@@ -71,65 +71,8 @@ for (d in datasets) {
 
 AVG <- apply(TABLE, c(1,2,3), mean, na.rm = TRUE)
 
-constantwise_function <- function(x, x.val, y.val) {
-  x.val <- sort(as.numeric(na.exclude(1 - x.val)))
-  y.val <- sort(as.numeric(na.exclude(y.val)))
-  out <- 0
-  
-  for(i in 1:(length(x.val) - 1)) {
-    if(x > x.val[i] & x <= x.val[i+1]) {
-      out <- ((y.val[i] - y.val[i+1]) / (x.val[i] - x.val[i+1])) * x + y.val[i] - 
-        ((y.val[i] - y.val[i+1]) / (x.val[i] - x.val[i+1])) * x.val[i]
-    }
-  }
-  return(out)
-}
-
-constantwise_function <- Vectorize(constantwise_function, "x")
-
-interpolation <- function(x.val, y.val) {
-  y <- NULL
-  count <- 0
-  for(i in c(seq(0, 0.3, length.out = 70), seq(0.3, 0.8, length.out = 24), 
-             seq(0.8, 1, length.out = 24))) {
-    count <- count + 1
-    y[count] <- constantwise_function(i, x.val, y.val)
-  }
-  return(c(0, y, 1))
-}
-
-interpolated_sensitivity <- array(
-  data = rep(NA, 120),
-  dim = c(
-    length(datasets),
-    length(classifiers),
-    nreps,
-    120 
-  ),
-  dimnames = list(
-    data = datasets,
-    classifier = classifiers,
-    rep = 1:nreps,
-    values = 1:120
-  )
-)
-
-for(i in 1:length(datasets)) {
-  for(j in 1:length(classifiers)) {
-    for(k in 1:nreps) {
-      interpolated_sensitivity[i, j, k, ] <- interpolation(ROC_CURVE[1, i, j, k, ], ROC_CURVE[2, i, j, k, ])
-    }
-  }
-}
-
-AVG_ROC_CURVE <- apply(interpolated_sensitivity, c(1,2,4), mean)
-
-
 saveRDS(TABLE, "TABLE.rds")
-saveRDS(ROC_CURVE, "ROC_CURVE.rds")
 
 saveRDS(AVG, "AVG.rds")
-saveRDS(AVG_ROC_CURVE, "AVG_ROC_CURVE.rds")
-
 
 
