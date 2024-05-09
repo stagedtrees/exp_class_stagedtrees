@@ -24,8 +24,8 @@ nreps <- 10
 
 dir.create("results/", showWarnings = FALSE)
 set.seed(2020)
-for (d in datasets[16]){
-  # message(d)
+for (d in datasets){
+  message(d)
   timestamp()
    res_path <- paste0("results/",d,"/") 
    dir.create(res_path, showWarnings = FALSE)

@@ -9,3 +9,4 @@ ROC*.rds
 *.pdf
 .Rproj.user
 .Rhistory
+*.tex
