@@ -3,13 +3,18 @@ source("methods.R")
 source("statistics.R")
 
 nreps <- 100
-n <- 1000
+n <- 10000
 ps <- 2:15
-ks <- 2:3
+ks <- 2
 stats <- c("time", "accuracy", "f1")
 
-torun <- c("st_kmeans_cmi", "st_fbhc_cmi", 
-           "bnc_nb", "nnet_1", "rf_1", "logistic_basic")
+torun <- c("st_bhc_3db",
+           "st_bhc_tan_cl",
+           "st_kmeans_cmi",
+            "bnc_3db", 
+            "bnc_nb", 
+            "bnc_tan_hc")
+
 TABLE <- array(
   data = NA,
   dim = c(
@@ -28,20 +33,21 @@ TABLE <- array(
   )
 )
 
-for (k in ks){
 for (p in ps){
-  tree <- lapply(1:p, function(i) c(1:k))
+  tree <- lapply(1:p, function(i) paste0(1:k))
   names(tree) <- paste0("X",1:p)
-  tree <- c(list(answer = c(0,1)), tree)
+  tree <- c(list(answer = c("0","1")), tree)
   pb <- txtProgressBar(min = 1, max = nreps, style = 3)
   message(p)
   for (rep in 1:nreps){
     setTxtProgressBar(pb, rep)
     todo <- TRUE
     while (todo) {
-      model <- random_sevt(x = tree, q = 0.7)
-      train <- sample_from(model, nsim = n)
-      test <- sample_from(model, nsim = n)
+      model <- random_sevt(x = tree, q = 0.5)
+      train <- sample_from(model, size =  n)
+      test <- sample_from(model, size =  n)
+      #test <- expand.grid(model$tree[-1])
+      #test$answer <- predict(model, test)
       if (length(unique(train$answer)) == 2){
         todo <- FALSE
       }
@@ -49,9 +55,8 @@ for (p in ps){
     for (c_name in torun){
       #message(c_name)
       c_fun <- get(c_name)
-      time_ <- system.time(predict <- c_fun(train, test, optimizecutoff = FALSE))[3]
-      res <- list(time = time_, predict = predict$pred, probability = predict$prob, 
-                   cutoff = predict$cutoff)
+      time_ <- system.time(predict <- c_fun(train, test))[3]
+      res <- list(time = time_, predict = predict)
       for (stat in stats){
         stat_fun <- get(stat)
         TABLE[stat, c_name, paste0(p), paste0(k), rep] <- stat_fun(res, test$answer)
@@ -60,23 +65,6 @@ for (p in ps){
   }
   close(pb)
 }
-}
-
-saveRDS(TABLE, "TABLS.rds")
-AVG <- apply(TABLE, 1:4, mean, na.rm = TRUE)
 
 
-library(ggplot2)
-library(reshape2)
-
-AVG['time',,,] <- log(AVG['time',,,], base = 10)
-saveRDS(AVG, file = "AVG.rds")
-
-dd <- melt(AVG,value.name = "value", na.rm = TRUE)
-levels(dd$stat)[1] <- "log-time"
-levels(dd$classifier) <- c("ST_NAIVE_KM", "ST_FBHC", "BNC_NB", "NNet", "RFor", "Logistic")
-PLOT <- ggplot(dd) + geom_line(aes(x = p, y = value, group = classifier, color = classifier)) + 
-  facet_grid(rows = vars(stat), cols = vars(k),  scales = "free") + theme_bw() + ylab("") + 
-  theme(legend.position = "bottom", legend.title = element_blank())
-
-ggsave(filename = "res_simulation.pdf", PLOT, width = 5, height = 4)
+saveRDS(TABLE, "TABLE_SIMULATION.rds")

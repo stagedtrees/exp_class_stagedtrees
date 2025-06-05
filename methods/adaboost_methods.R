@@ -1,6 +1,4 @@
-library(ada)
-
-predict_adaboost <- function(model, train, test, optimizecutoff){
+predict_adaboost <- function(model, train, test, optimizecutoff = FALSE){
   if (optimizecutoff){
     prob <- predict(model, newdata = train, type = "probs")
     cutoff <- InformationValue::optimalCutoff(actuals = as.numeric(train$answer) - 1, 

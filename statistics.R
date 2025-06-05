@@ -1,7 +1,7 @@
 library(pROC)
 
 statistics <- c("time", "accuracy", "balanced_accuracy", "f1", "sens", "spec", 
-                "fn", "fp", "error", "precision", "auc", "cutoff", "spec_sens")
+                "fn", "fp", "error", "precision")
 
 
 time <- function(res, true){
@@ -65,17 +65,5 @@ precision <- function(res, true) {
    as.numeric(ifelse(P > 0, TT[1, 1] / P, 1))
 }
 
-auc <- function(res, true) { # da restituire con tutti i metodi la seconda colonna, per i metodi che le restituiscono entrambe.
-   suppressMessages(as.numeric(roc(response = true, predictor = res$prob, auc = TRUE, plot = FALSE)$auc))
-}
 
-spec_sens <- function(res, true) {
-   r1 <- suppressMessages(as.numeric(roc(response = true, predictor = res$prob, auc = FALSE, plot = FALSE)$specificities))
-   r2 <- suppressMessages(as.numeric(roc(response = true, predictor = res$prob, auc = FALSE, plot = FALSE)$sensitivities))
-   return(list(specificities = r1, sensitivities = r2))
-}
-
-cutoff <- function(res, true) {
-   res$cutoff
-}
 

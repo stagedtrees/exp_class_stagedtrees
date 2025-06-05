@@ -1,5 +1,3 @@
-library(rpart)
-
 predict_tree <- function(model, train, test, optimizecutoff){
   if (optimizecutoff){
     prob <- predict(model, newdata = train, type = "prob")
@@ -23,11 +21,11 @@ predict_tree <- function(model, train, test, optimizecutoff){
 
 
 cl_tree_1 <- function(train, test, optimizecutoff = FALSE, ...) {
-  model <- rpart(answer ~ ., data = train, method = "class", cp = 0)
+  model <- rpart::rpart(answer ~ ., data = train, method = "class", cp = 0)
   predict_tree(model, train, test, optimizecutoff)
 }
 
 cl_tree_2 <- function(train, test, optimizecutoff = FALSE, ...) {
-  model <- rpart(answer ~ ., data = train, method = "class", cp = 0.05)
+  model <- rpart::rpart(answer ~ ., data = train, method = "class", cp = 0.05)
   predict_tree(model, train, test, optimizecutoff)
 }

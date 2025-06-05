@@ -1,5 +1,3 @@
-library(e1071)
-
 predict_svm <- function(model, train, test, optimizecutoff){
   if (optimizecutoff){
     prob <- attr(predict(model, newdata = train, probability = T), "probabilities")
