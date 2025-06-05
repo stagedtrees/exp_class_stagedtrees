@@ -3,7 +3,7 @@
 This repository contains the code to run experiments on the benchmarking and evaluations 
 of staged event tree classifiers. 
 
-The code was used in the following publications:
+The code was used in the following publications (expand for bibtex):
 
 <details> 
 
@@ -38,7 +38,6 @@ Context-Specific Refinements of Bayesian Network Classifiers.
 <summary> Carli F., Leonelli M., Varando G. (2023) 
 A new class of generative classifiers based on staged tree models
 <i>Knowledge-Based Systems</i>
-
 </summary>
 
 ```
