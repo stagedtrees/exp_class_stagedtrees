@@ -12,7 +12,8 @@ Leonelli, M. and  Varando, G.. (2024).
 Context-Specific Refinements of Bayesian Network Classifiers.
 <i>Proceedings of The 12th International Conference on Probabilistic Graphical Models</i>
 </summary>
-  ```
+
+```
   
 @InProceedings{leonelli24context,
   title = 	 {Context-Specific Refinements of Bayesian Network Classifiers},
@@ -28,8 +29,8 @@ Context-Specific Refinements of Bayesian Network Classifiers.
   pdf = 	 {https://raw.githubusercontent.com/mlresearch/v246/main/assets/leonelli24a/leonelli24a.pdf},
   url = 	 {https://proceedings.mlr.press/v246/leonelli24a.html}
 }
+```  
 
-  ```  
 </details>
 
 <details> 
@@ -38,7 +39,8 @@ Context-Specific Refinements of Bayesian Network Classifiers.
 A new class of generative classifiers based on staged tree models
 *Knowledge-Based Systems*
 </summary>
- ```
+
+```
 @article{carli2023new,
 title = {A new class of generative classifiers based on staged tree models},
 journal = {Knowledge-Based Systems},
@@ -52,7 +54,8 @@ author = {Federico Carli and Manuele Leonelli and Gherardo Varando},
 keywords = {Bayesian networks, Model selection, Staged trees, Statistical classification},
 abstract = {Generative models for classification use the joint probability distribution of the class variable and the features to construct a decision rule. Among generative models, Bayesian networks and naive Bayes classifiers are the most commonly used and provide a clear graphical representation of the relationship among all variables. However, these have the disadvantage of highly restricting the type of relationships that could exist, by not allowing for context-specific independence. Here we introduce a new class of generative classifiers, called staged tree classifiers, which formally account for context-specific independence. They are constructed by a partitioning of the vertices of an event tree from which conditional independence can be formally read. The naive staged tree classifier is also defined, which extends the classic naive Bayes classifier whilst retaining the same complexity. An extensive simulation study shows that the classification accuracy of staged tree classifiers is competitive with that of state-of-the-art classifiers and an example showcases their use in practice.}
 }
- ```
+```
+
 </details>
 
 
