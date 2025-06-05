@@ -38,6 +38,7 @@ Context-Specific Refinements of Bayesian Network Classifiers.
 <summary> Carli F., Leonelli M., Varando G. (2023) 
 A new class of generative classifiers based on staged tree models
 *Knowledge-Based Systems*
+
 </summary>
 
 ```
