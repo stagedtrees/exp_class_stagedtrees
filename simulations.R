@@ -3,7 +3,7 @@ source("methods.R")
 source("statistics.R")
 
 nreps <- 100
-n <- 10000
+n <- 1000
 ps <- 2:15
 ks <- 2
 stats <- c("time", "accuracy", "f1")

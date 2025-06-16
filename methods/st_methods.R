@@ -469,6 +469,13 @@ st_hclust_cmi <- function(train, test,  ...){
   predict(model, newdata = test, class = "answer")
 }
 
+
+st_hclust_wd2_cmi <- function(train, test,  ...){
+  model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_cmi(train))
+  model <- stages_hclust(model, k = 2, distance = "totvar", method = "ward.D2")
+  predict(model, newdata = test, class = "answer")
+}
+
 st_hclust_ch <- function(train, test,  ...){
   model <- full(train, lambda = 1, join_unobserved = TRUE, order = ordering_ch(train))
   model <- stages_hclust(model, k = 2, distance = "totvar", method = "complete")
